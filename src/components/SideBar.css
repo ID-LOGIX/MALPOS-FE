@@ -1,0 +1,125 @@
+/* SideBar.css */
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 30%;
+  background-color: white;
+  overflow-x: hidden;
+  transition: 0.5s;
+  transform: translateX(-100%); /* start off the screen */
+  z-index: 1000; /* ensure sidebar appears on top */
+}
+
+.sidebar.open {
+  padding-top: 3.5rem;
+  transform: translateX(0); /* slide in */
+}
+
+.closebtn {
+  position: absolute;
+  top: 15px; /* adjust this as per your header height */
+  right: 15px; /* give it a bit of margin from the right edge */
+  background: none;
+  border: none;
+  cursor: pointer; /* make it look clickable */
+}
+
+.closebtn:focus {
+  outline: none;
+}
+
+.closebtn:hover {
+  opacity: 0.7; /* add hover effect for better UX */
+}
+
+.seat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: black;
+}
+
+.seat-number {
+  flex-grow: 1;
+  text-align: left;
+}
+
+.toggle-icon {
+  cursor: pointer;
+}
+
+.product-column,
+.qty-column,
+.amount-column {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 0 0.5rem;
+}
+
+.product-column {
+  flex: 2; /* Taking more space for product name */
+}
+
+.qty-column,
+.amount-column {
+  flex: 1; /* Equal space for Qty and Amount */
+}
+
+.btn-group {
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem 0;
+}
+.total-amount {
+  margin-top: 1rem;
+  font-weight: bold;
+  border-top: 1px solid black;
+  padding-top: 0.5rem;
+  text-align: end;
+}
+
+.save-btn,
+.clear-btn {
+  flex: 1;
+  margin: 0.5rem;
+  padding: 1rem 1rem;
+  width: 40%;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.save-btn {
+  background-color: #f29b30;
+  color: white;
+}
+
+.clear-btn {
+  background-color: red;
+  color: white;
+}
+
+.save-btn:hover,
+.clear-btn:hover {
+  opacity: 0.8;
+}
+
+.product-comment-input {
+  width: 100%;
+  padding: 5px;
+  margin-top: 5px;
+  font-size: 12px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+.product-comment-display {
+  font-size: 10px;
+  color: grey;
+  margin-top: 3px;
+}

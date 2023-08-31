@@ -1,0 +1,20 @@
+.optionContainer {
+  max-height: 150px !important;
+  overflow-y: auto !important;
+}
+
+/* Overriding the selected item background and text color */
+.multiselect-container .item-content.selected {
+  background-color: red !important;
+  color: white !important;
+}
+
+/* Overriding the on-focus item background and text color */
+.multiselect-container .item-content:focus {
+  background-color: red !important;
+  color: white !important;
+}
+
+.chips {
+  background: "red" !important;
+}

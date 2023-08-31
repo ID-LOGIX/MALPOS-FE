@@ -1,0 +1,27 @@
+{
+    "logo": {
+      "path": "/",
+      "src": "images/logo-malpos.png",
+      "alt": "logo",
+      "name": "malpos"
+    },
+    "pattern": {
+      "src": "images/pattern.webp",
+      "alt": "line-pattern"
+    },
+    "title": "Enter Pin",
+    "input": [
+      {
+        "icon": "lock",
+        "type": "password",
+        "name": "password",
+        "placeholder": "Enter 4 digit pin code",
+        "fieldSize": "w-100 h-sm",
+        "passwordVisible": true
+      }
+    ],
+    "button": { "type": "submit", "text": "sign in", "fieldSize": "h-sm" },
+    "forgot": { "path": "/forgot-password", "text": "forgot password?" },
+    "divide": { "text": "or" }
+  }
+  

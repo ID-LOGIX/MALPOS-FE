@@ -1,0 +1,45 @@
+{
+    "logo": {
+      "path": "/",
+      "src": "images/logo-malpos.png",
+      "alt": "logo",
+      "name": "malpos"
+    },
+    "pattern": {
+      "src": "images/pattern.webp",
+      "alt": "line-pattern"
+    },
+    "title": "Register to MALPOS",
+    "input": [
+      {
+        "icon": "email",
+        "type": "email",
+        "name": "email",
+        "placeholder": "Enter your email",
+        "fieldSize": "w-100 h-sm"
+      },
+      {
+        "icon": "person",
+        "type": "name",
+        "name": "name",
+        "placeholder": "Enter your Full Name",
+        "fieldSize": "w-100 h-sm"
+      },
+      {
+        "icon": "lock",
+        "type": "password",
+        "name": "password",
+        "placeholder": "Enter your password",
+        "fieldSize": "w-100 h-sm",
+        "passwordVisible": true
+      }
+    ],
+    "button": { "type": "submit", "text": "register", "fieldSize": "h-sm" },
+    "divide": { "text": "or" },
+    "navigate": {
+      "title": "Already have an account?",
+      "path": "/",
+      "text": "Login"
+    }
+  }
+  

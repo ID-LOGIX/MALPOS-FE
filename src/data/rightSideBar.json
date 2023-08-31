@@ -1,0 +1,157 @@
+{
+  "navs": [
+    {
+      "menu": [
+        {
+          "text": "Venue:\t Main",
+          "submenu": [
+            { "href": "/analytics", "text": "Main" },
+            { "href": "/analytics", "text": "B2" },
+            { "href": "/analytics", "text": "Bakery" }
+          ]
+        },
+        {
+          "icon": "donut_small",
+          "text": "Statistics",
+          "submenu": [
+            { "href": "/analytics", "text": "Dashboard" },
+            { "href": "", "text": "Sales" },
+            { "href": "", "text": "History" },
+            { "href": "", "text": "Taxes" },
+            { "href": "", "text": "Reports" },
+            { "href": "", "text": "eMenu" }
+          ]
+        },
+        {
+          "icon": "dashboard",
+          "text": "Sale",
+          "submenu": [
+            { "href": "/receipt", "text": "Receipts" },
+            { "href": "/order-notification", "text": "Order Notification" },
+            { "href": "/product-return", "text": "Product Return" },
+            { "href": "/payment-method", "text": "Payment Methods" },
+            { "href": "/sale-type", "text": "Sale Types" }
+          ]
+        },
+        {
+          "icon": "donut_small",
+          "text": "Product Info",
+          "submenu": [
+            { "href": "/product-page", "text": "Products" },
+            { "href": "/product-category", "text": "Product Categories" },
+            { "href": "/product-groups", "text": "Product Groups" }
+          ]
+        },
+        {
+          "icon": "apartment",
+          "text": "Brands",
+          "href": "/brands"
+        },
+        {
+          "icon": "store",
+          "text": "Branches",
+          "href": "/branches"
+        },
+        {
+          "icon": "currency_exchange",
+          "text": "Taxes",
+          "submenu": [
+            { "href": "/tax-category", "text": "Tax Category" },
+            { "href": "/tax-rate", "text": "Tax Rate" }
+          ]
+        },
+        {
+          "icon": "layers",
+          "text": "Finances",
+          "submenu": [
+            { "href": "/accounts", "text": "Accounts" },
+            { "href": "/account-categories", "text": "Categories" },
+            { "href": "/transactions", "text": "Transactions" },
+            { "href": "/payroll", "text": "Payroll" },
+            { "href": "/cashflow", "text": "Cashflow" }
+          ]
+        },
+        {
+          "icon": "article",
+          "text": "Menu",
+          "submenu": [
+            { "href": "/product-list", "text": "Products" },
+
+            { "href": "/preparation", "text": "Preparation" },
+            { "href": "/ingredient", "text": "Ingredient" },
+
+            { "href": "/categories", "text": "Categories" },
+            { "href": "/station", "text": "Station" },
+            { "href": "/rearrangement", "text": "Menu Rearrangement" },
+            { "href": "/constructure", "text": "Menu Constructor" },
+            { "href": "/manage-modifier", "text": "Manage Modifiers" }
+          ]
+        },
+        {
+          "icon": "shopping_cart",
+          "text": "eMenu",
+          "submenu": [
+            { "href": "/eMenu-list", "text": "Products" },
+
+            { "href": "/eMenu-rearrangement", "text": "Menu Rearrangement" },
+
+            { "href": "/emenu-setting", "text": "Settings" }
+          ]
+        },
+        {
+          "icon": "streetview",
+          "text": "Marketing",
+          "submenu": [
+            { "href": "/customer", "text": "Customers" },
+            { "href": "/customer-group", "text": "Customer Group" },
+            { "href": "/review", "text": "Reviews" }
+          ]
+        },
+        {
+          "icon": "class",
+          "text": "Inventory",
+          "submenu": [
+            { "href": "/stocks", "text": "Stock" },
+            { "href": "/supplies", "text": "Supplies" },
+
+            { "href": "/movement-reports", "text": "Movements Reports" },
+            { "href": "/product-movement", "text": "Product Movement" },
+
+            { "href": "/return-supplies", "text": "Returned Supplies" },
+            { "href": "/transfers", "text": "Transfers" },
+            { "href": "/inventory-check", "text": "Inventory Check" },
+            { "href": "/storage", "text": "Storage" },
+
+            { "href": "/packages", "text": "Packages" },
+            { "href": "/suppliers", "text": "Suppliers" },
+
+            { "href": "/production", "text": "Production" }
+          ]
+        },
+        {
+          "icon": "lock",
+          "text": "Access",
+          "submenu": [
+            { "href": "/login", "text": "Staff" },
+            { "href": "/register", "text": "Roles" },
+            { "href": "/forgot-password", "text": "terminals" }
+          ]
+        },
+        {
+          "icon": "settings",
+          "text": "Settings",
+          "submenu": [
+            { "href": "", "text": "General" },
+            { "href": "", "text": "Terminals" },
+            { "href": "", "text": "Taxes" },
+            { "href": "", "text": "Modules" },
+            { "href": "", "text": "Receipts" },
+            { "href": "", "text": "Subscriptions" },
+            { "href": "", "text": "Tables Alignment" }
+          ]
+        }
+      ]
+    }
+  ],
+  "button": { "icon": "lock", "path": "/login", "text": "logout" }
+}

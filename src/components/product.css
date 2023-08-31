@@ -1,0 +1,32 @@
+.custom-card {
+  width: 200px;
+  height: 250px;
+  overflow: hidden;
+}
+
+.product-name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.price-tab {
+  background-color: var(--primaryHEX);
+  border-radius: 25px;
+  padding: 2px 8px;
+  text-align: center;
+  color: #000;
+  font-size: 12px;
+  display: inline-block;
+}
+
+.custom-img {
+  width: 100%; /* Fixed width */
+  height: 180px; /* Fixed height */
+  object-fit: cover; /* Ensures the image retains its aspect ratio */
+  transition: transform 0.3s ease; /* Smooth transition for hover effect */
+}
+
+.custom-img:hover {
+  transform: scale(1.1); /* Enlarges the image slightly on hover */
+}

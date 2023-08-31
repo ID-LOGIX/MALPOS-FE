@@ -1,0 +1,40 @@
+.pop-out-button {
+  transform: scale(1);
+  transition: transform 0.2s;
+}
+
+.pop-out-button:hover {
+  transform: scale(1.1);
+}
+
+.cus-margin {
+  margin-left: auto;
+}
+
+.cus-checkout-btn {
+  display: block;
+  width: 95%;
+  font-size: 10px;
+  word-wrap: break-word;
+  border: 1px var(--primaryHEX) solid;
+  background-color: gainsboro;
+  color: var(--primaryHEX);
+  font-weight: bolder;
+}
+
+.cus-checkout-btn:hover {
+  display: inline-block;
+  text-overflow: ellipsis;
+  box-shadow: 0px 8px 16px 0px var(--primaryHEX);
+  background-color: gainsboro;
+  color: var(--primaryHEX);
+  font-weight: bolder;
+}
+
+.cus-checkout-btn:active {
+  box-shadow: 0px 8px 16px 0px var(--primaryHEX);
+  background-color: gainsboro;
+  color: var(--primaryHEX);
+  font-weight: bolder;
+  /* width: 100%; */
+}

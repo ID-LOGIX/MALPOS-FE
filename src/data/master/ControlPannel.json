@@ -1,0 +1,19 @@
+[
+  {
+    "icon": "faTentArrowTurnLeft",
+    "text": "Return"
+  },
+  {
+    "icon": "faUser",
+    "text": "Customers"
+  },
+  {
+    "icon": "faFile",
+    "text": "Make Report",
+    "path": "/sale-reports"
+  },
+  {
+    "icon": "faDollarSign",
+    "text": "Add Transaction"
+  }
+]

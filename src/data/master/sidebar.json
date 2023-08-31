@@ -1,0 +1,63 @@
+{
+  "navs": [
+    {
+      "title": "master",
+      "menu": [
+        {
+          "href": "/orders-line",
+          "icon": "account_circle",
+          "text": "users"
+        },
+        {
+          "href": "/orders-line",
+          "icon": "report",
+          "text": "alerts"
+        },
+
+        {
+          "href": "/orders-line",
+          "icon": "email",
+          "text": "messages",
+          "badge": { "text": "03", "variant": "primary round" }
+        },
+        {
+          "href": "/orders-line",
+          "icon": "streetview",
+          "text": "overview"
+        }
+      ]
+      
+    }
+  ],
+  "notifications": [
+    {
+      "title": "master",
+      "menu": [
+        {
+          "href": "/orders-line",
+          "icon": "account_circle",
+          "text": "users"
+        },
+        {
+          "href": "/orders-line",
+          "icon": "report",
+          "text": "alerts"
+        },
+
+        {
+          "href": "/orders-line",
+          "icon": "email",
+          "text": "messages",
+          "badge": { "text": "03", "variant": "primary round" }
+        },
+        {
+          "href": "/orders-line",
+          "icon": "streetview",
+          "text": "overview"
+        }
+      ]
+      
+    }
+  ],
+  "button": { "icon": "lock", "path": "/login", "text": "logout" }
+}

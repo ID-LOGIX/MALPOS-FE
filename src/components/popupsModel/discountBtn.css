@@ -1,0 +1,13 @@
+.discount-num-size {
+  font-size: 2rem;
+  background-color: gainsboro;
+  color: var(--primaryHEX);
+  width: 90%;
+}
+
+.discount-num-size:hover {
+  box-shadow: 0px 8px 16px 0px var(--primaryHEX);
+  background-color: gainsboro;
+  color: var(--primaryHEX);
+  font-weight: bolder;
+}

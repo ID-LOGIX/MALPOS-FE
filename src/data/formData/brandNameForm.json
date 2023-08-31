@@ -1,0 +1,33 @@
+{
+    "logo": {
+      "path": "/",
+      "src": "images/logo-malpos.png",
+      "alt": "logo",
+      "name": "malpos"
+    },
+    "pattern": {
+      "src": "images/pattern.webp",
+      "alt": "line-pattern"
+    },
+    "title": "Brand Name",
+    "input": [
+      {
+        "icon": "business",
+        "type": "text",
+        "name": "brand Name",
+        "placeholder": "Enter your Brand Name",
+        "fieldSize": "w-100 h-sm"
+      },
+      {
+        "icon": "lock",
+        "type": "password",
+        "name": "password",
+        "placeholder": "Enter your password",
+        "fieldSize": "w-100 h-sm",
+        "passwordVisible": true
+      }
+    ],
+    "button": { "type": "submit", "text": "Next", "fieldSize": "h-sm" },
+    "divide": { "text": "or" }
+  }
+  
