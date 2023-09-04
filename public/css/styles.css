@@ -7897,3 +7897,21 @@ textarea.form-control {
   margin-left: 10px;
   margin-bottom: 0px;
 }
+
+/* //////////////////////////////////////////// KDS css ///////////////////////////////////////////////// */
+
+.spinner-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh ;
+
+  width:100%
+}
+.spinner {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  align-items: center;
+  flex: 1
+}

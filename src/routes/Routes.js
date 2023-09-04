@@ -7,6 +7,8 @@ import OrderReceipt from "../pages/master/OrderReceipt";
 import ProductDetails from "../pages/master/ProductDetails";
 import OrderNotification from "../pages/master/OrderNotification";
 import KitchenOrderList from "../pages/master/KitchenOrderList";
+import KitchenOrders from "../pages/master/KitchenOrders";
+
 import LoginPage from "../pages/LoginPage/LoginPage";
 import { Error } from "../pages/supports";
 import BrandNameForm from "../pages/BrandNameForm/BrandNameForm";
@@ -51,7 +53,8 @@ const AllRoutes = () => {
 
         <Route path="*" element={<Error />} />
         <Route path="/orders-line" element={<OrdersLine />} />
-        <Route path="/kitchen-order-list" element={<KitchenOrderList />} />
+        {/* <Route path="/kitchen-order-list" element={<KitchenOrderList />} /> */}
+        <Route path="/kitchen-order-list" element={<KitchenOrders />} />
         <Route path="/product-details" element={<ProductDetails />} />
         <Route path="/order-receipt" element={<OrderReceipt />} />
         <Route path="/order-notification" element={<OrderNotification />} />
