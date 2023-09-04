@@ -15,7 +15,7 @@ export default function ProductsUnderCategory({
     const id = categoryId;
     try {
       const response = await api.get(`/product/${id}`);
-      setProducts(response.data.product);
+      setProducts(response.data.products.data);
       console.log(response);
     } catch (error) {}
   };
