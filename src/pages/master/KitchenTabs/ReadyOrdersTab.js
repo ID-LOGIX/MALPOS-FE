@@ -10,7 +10,8 @@ import { RingLoader } from "react-spinners";
 function ReadyOrdersTab() {
   const [orders, setOrders] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const stationId = "md_station_id: 1";
+  // const stationId = "md_station_id: 1";
+  const stationId = 1;
 
   useEffect(() => {
     setIsLoading(true);
@@ -22,7 +23,9 @@ function ReadyOrdersTab() {
       const response = await axios.post(
         "http://idlogix1.utis.pk:7001/api/show_kds",
         {
+          // md_station_id: 1,
           stationId: stationId,
+
           filter: "ready",
         }
       );
@@ -33,9 +36,26 @@ function ReadyOrdersTab() {
       console.error("Error fetching orders:", error);
     }
   }
+  let items = orders?.flatMap((order) =>
+    order.td_sale_order_item.filter(
+      (item) =>
+        item.order_item_status == "ready" &&
+        item.md_product.stations.some(
+          (station) => station.md_station_id === stationId
+        )
+    )
+  );
+  // console.log(items);
+  // Create an array of td_sale_order_id values from items
+  const itemOrderIds = items.map((item) => item.td_sale_order_id);
 
+  // Filter orders based on matching td_sale_order_id
+  const filteredOrders = orders.filter((order) =>
+    itemOrderIds.includes(order.td_sale_order_id)
+  );
+  // console.log(filteredOrders);
   return (
-    <div className="kitchen-order-main-wrapper">
+    <div className="kitchen-order-main-wrapper margin">
       {isLoading ? (
         <div className="spinner-container">
           <div className="spinner">
@@ -43,14 +63,15 @@ function ReadyOrdersTab() {
           </div>
         </div>
       ) : (
-        orders?.map((item, index) => {
+        filteredOrders?.map((item, index) => {
           return (
-            <Box key={index} className={"kitchen-order-main mb-3"}>
+            <Box key={index} className={"kitchen-order-main mb-3 width"}>
               <h4
                 style={{
                   display: "flex",
                   justifyContent: "space-between",
                   alignItems: "center",
+                  marginTop: "20px",
                 }}
               >
                 <span style={{ fontWeight: "lighter", fontSize: "0.9em" }}>
@@ -78,6 +99,7 @@ function ReadyOrdersTab() {
                 </span>
               </h4>
               <Text className={"pb-2"}>
+              First Floor/الطابق الأول{" "}
                 {item.order_type === "Table" && `Table ${item.table_no}`}
                 {item.order_type !== "Table" && item.order_type}
               </Text>
@@ -87,14 +109,27 @@ function ReadyOrdersTab() {
                   style={{ justifyContent: "center" }}
                 >
                   <Text>
-                    {item.orgination_station
-                      ? item.orgination_station
-                      : "KITCHEN"}
+                    {item?.td_sale_order_item.map((product, i) =>
+                      product.md_product.stations.map((station) =>
+                        station.md_station_id === stationId ? (
+                          <Text key={station.station_name}>
+                            {station.station_name}
+                          </Text>
+                        ) : null
+                      )
+                    )}
                   </Text>
                 </Box>
                 <Box className={"px-4 py-2 d-flex flex-column gap-2"}>
-                  {item?.td_sale_order_item?.map((orderItem, index) => {
-                    return (
+                  {item?.td_sale_order_item
+                    .filter(
+                      (orderItem) =>
+                        orderItem.order_item_status === "ready" &&
+                        orderItem.md_product.stations.some(
+                          (station) => station.md_station_id === stationId
+                        )
+                    )
+                    .map((orderItem, index) => (
                       <div
                         key={index}
                         className="d-flex justify-content-between align-items-center"
@@ -113,7 +148,7 @@ function ReadyOrdersTab() {
                           orderItem.md_product.product_name ? (
                             <span>{orderItem.md_product.product_name}</span>
                           ) : (
-                            <span>Product Name Not Available</span>
+                            ''
                           )}
                           <div style={{ color: "#999" }}>
                             {orderItem.comment
@@ -123,8 +158,7 @@ function ReadyOrdersTab() {
                         </Text>
                         <span>&#10004;</span>
                       </div>
-                    );
-                  })}
+                    ))}
                 </Box>
               </CardLayout>
             </Box>

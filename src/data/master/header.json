@@ -1,6 +1,8 @@
 {
   "logo": {
-    "path": "/kitchen-order-list",
+    "path": "/orders-line",
+    "pathKDS": "/kitchen-order-list",
+
     "src": "images/brandlog.png",
     "alt": "blue",
     "name": "MALPOS"

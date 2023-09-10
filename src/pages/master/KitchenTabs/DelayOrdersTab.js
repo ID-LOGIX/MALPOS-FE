@@ -5,15 +5,17 @@ import axios from "axios";
 import { RingLoader } from "react-spinners";
 import { css } from "@emotion/react";
 function DelayOrdersTab({
-  dummyOrders,
-  hanldeOrderStatus,
+  
   isOrderUpdating,
   CountDownSecResult,
 }) {
   const [orders, setOrders] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [elapsedTime, setElapsedTime] = useState(0);
 
-  const stationId = "md_station_id: 1";
+  // const stationId = "md_station_id: 1";
+  const stationId = 1;
+
   useEffect(() => {
     setIsLoading(true);
 
@@ -25,7 +27,9 @@ function DelayOrdersTab({
       const response = await axios.post(
         "http://idlogix1.utis.pk:7001/api/show_kds",
         {
+          // md_station_id:1,
           stationId: stationId,
+
           filter: "delay",
         }
       );
@@ -39,8 +43,78 @@ function DelayOrdersTab({
     }
   }
 
+  const hanldeOrderStatus = async (item) => {
+    const itemIds =
+      item.td_sale_order_item?.map(
+        (orderItem) => orderItem.td_sale_order_item_id
+      ) || [];
+
+    try {
+      const response = await axios.post(
+        "http://idlogix1.utis.pk:7001/api/kds_status_update",
+        {
+          md_order_item_id: itemIds,
+          md_order_item_status: "ready",
+        }
+      );
+
+      if (response.status === 200) {
+        fetchOrdersForStation(stationId);
+        // console.log("Order status updated successfully");
+        const updatedOrders = orders.filter(
+          (order) => order.td_sale_order_id !== item.td_sale_order_id
+        );
+        clearInterval(item.countUpTimer);
+        setOrders(updatedOrders);
+      } else {
+        console.error("Failed to update order status");
+      }
+    } catch (error) {
+      console.error("Error updating order status:", error);
+    }
+  };
+  const formatTime = (seconds) => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    const formattedMinutes = minutes.toString().padStart(2, "0");
+    const formattedSeconds = remainingSeconds.toString().padStart(2, "0");
+    return `${formattedMinutes}:${formattedSeconds}`;
+  };
+
+  // Function to start the timer
+  const startTimer = () => {
+    return setInterval(() => {
+      setElapsedTime((prevElapsedTime) => prevElapsedTime + 1);
+    }, 1000);
+  };
+
+  useEffect(() => {
+    const intervalId = startTimer();
+
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, []);
+  let items = orders?.flatMap((order) =>
+  order.td_sale_order_item.filter(
+    (item) =>
+      item.order_item_status == "delay" &&
+      item.md_product.stations.some(
+        (station) => station.md_station_id === stationId
+      )
+  )
+);
+// console.log(items);
+// Create an array of td_sale_order_id values from items
+const itemOrderIds = items.map((item) => item.td_sale_order_id);
+
+// Filter orders based on matching td_sale_order_id
+const filteredOrders = orders.filter((order) =>
+  itemOrderIds.includes(order.td_sale_order_id)
+);
+
   return (
-    <div className="kitchen-order-main-wrapper">
+    <div className="kitchen-order-main-wrapper margin" >
       {isLoading ? (
         <div className="spinner-container">
           <div className="spinner">
@@ -48,15 +122,16 @@ function DelayOrdersTab({
           </div>
         </div>
       ) : (
-        orders?.map((item, index) => {
+        filteredOrders?.map((item, index) => {
           // if (item.status === "delay") {
           return (
-            <Box key={index} className={"kitchen-order-main mb-3"}>
+            <Box key={index} className={"kitchen-order-main mb-3 width"} >
               <h4
                 style={{
                   display: "flex",
                   justifyContent: "space-between",
                   alignItems: "center",
+                  marginTop:"20px"
                 }}
               >
                 <span style={{ fontWeight: "lighter", fontSize: "0.9em" }}>
@@ -85,6 +160,7 @@ function DelayOrdersTab({
               </h4>
 
               <Text className={"pb-2"}>
+              First Floor/الطابق الأول{" "}
                 {item.order_type === "Table" && `Table ${item.table_no}`}
                 {item.order_type !== "Table" && item.order_type}
               </Text>
@@ -94,14 +170,27 @@ function DelayOrdersTab({
                   style={{ justifyContent: "center" }}
                 >
                   <Text>
-                    {item.orgination_station
-                      ? item.orgination_station
-                      : "KITCHEN"}
+                    {item?.td_sale_order_item.map((product, i) =>
+                      product.md_product.stations.map((station) =>
+                        station.md_station_id === stationId ? (
+                          <Text key={station.station_name}>
+                            {station.station_name}
+                          </Text>
+                        ) : null
+                      )
+                    )}
                   </Text>
                 </Box>
                 <Box className={"px-4 py-2 d-flex flex-column gap-2"}>
-                  {item?.td_sale_order_item?.map((orderItem, index) => {
-                    return (
+                  {item?.td_sale_order_item
+                    .filter(
+                      (orderItem) =>
+                        orderItem.order_item_status === "delay" &&
+                        orderItem.md_product.stations.some(
+                          (station) => station.md_station_id === stationId
+                        )
+                    )
+                    .map((orderItem, index) => (
                       <div
                         key={index}
                         className="d-flex justify-content-between align-items-center"
@@ -120,7 +209,7 @@ function DelayOrdersTab({
                           orderItem.md_product.product_name ? (
                             <span>{orderItem.md_product.product_name}</span>
                           ) : (
-                            <span>Product Name Not Available</span>
+                            ''
                           )}
                           <div style={{ color: "#999" }}>
                             {orderItem.comment
@@ -128,15 +217,15 @@ function DelayOrdersTab({
                               : ""}
                           </div>
                         </Text>
+                        <span>&#10004;</span>
                       </div>
-                    );
-                  })}
+                    ))}
                 </Box>
 
                 <Box className={"d-flex kitchen-order-ready-box px-3 py-4"}>
                   <Box
                     className="kitchen-order-ready-box-left bg-green clickable"
-                    onClick={() => hanldeOrderStatus(index)}
+                    onClick={() => hanldeOrderStatus(item)}
                     disabled={isOrderUpdating}
                   >
                     Ready
@@ -146,7 +235,11 @@ function DelayOrdersTab({
                     className={"kitchen-order-ready-box-right rounded-end"}
                     style={{ color: "red" }}
                   >
-                    <CountDownSecResult countdownValue={item.createdAt} />{" "}
+                   
+                      <Text>
+                        {formatTime(elapsedTime)}
+                      </Text>
+                     
                   </Box>
                 </Box>
               </CardLayout>

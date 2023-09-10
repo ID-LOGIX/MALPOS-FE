@@ -7915,3 +7915,27 @@ textarea.form-control {
   align-items: center;
   flex: 1
 }
+.mc-main-kds {
+  padding: 24px;
+  border-radius: 8px;
+  background-color: #b11919;
+  margin-top: 0px;
+  margin-bottom: 20px;
+  margin-right: 20px;
+  margin-left: 20px;
+  transition: all linear 0.3s;
+  -webkit-transition: all linear 0.3s;
+  -moz-transition: all linear 0.3s;
+  -ms-transition: all linear 0.3s;
+  -o-transition: all linear 0.3s;
+}
+
+.mc-header-group.height {
+  height: 70px;
+}
+.kitchen-order-main-wrapper.margin {
+margin-left: 35px;
+}
+.kitchen-order-main.mb-3.width {
+  width: 24%;
+} 
