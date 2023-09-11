@@ -77,7 +77,7 @@ export default function HeaderKds() {
               src={data?.logo.src}
               alt={data?.logo.alt}
               // name={data?.logo.name}
-              href={data?.logo.path}
+              href={data?.logo.pathKDS}
             />
           </Box>
         </Box>

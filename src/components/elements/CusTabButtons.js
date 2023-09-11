@@ -7,7 +7,7 @@ export default function CusTabButtons({ buttonText, activeIndex, handleItemClick
          <Text
       className={`bold floor-bg mr-10  ${
         activeIndex === buttonText.index ? "active" : ""
-      }`}
+      }`} style={{marginRight:"0px"}}
       as="span"
       onClick={() => handleItemClick(buttonText.index)}
       id={buttonText.id}
