@@ -22,20 +22,44 @@ import ReadyOrdersTab from "./KitchenTabs/ReadyOrdersTab";
 import { Logo } from "../../components";
 import data from "../../data/master/header.json";
 import { faWifi, faSliders } from "@fortawesome/free-solid-svg-icons";
+import { Modal } from "react-bootstrap";
+import cpButtonsData from "../../data/ControlPannelButtonData";
+import ControlPanel from "../../pages/master/ControlPanel";
+import CusModel from "../../components/popupsModel/CusModel";
+import Multiselect from "multiselect-react-dropdown";
 
 const KitchenOrderList = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const { user } = useSelector((state) => state["auth"]);
-
+  const row1 = cpButtonsData[0];
+  const row2 = cpButtonsData[1];
+  const row3 = cpButtonsData[2];
   const tabs = [AllOrdersTab, PreparingTab, ReadyOrdersTab, DelayOrdersTab];
   const [wifiConnected, setWifiConnected] = useState(true);
   const [currentTime, setCurrentTime] = useState("");
   const { theme, toggleTheme } = useContext(ThemeContext);
   const [change, setChange] = useState(false)
+  const [showModal, setShowModal] = useState(false);
+  const [selectedValue, setSelectedValue] = useState('');
+
+
   const handleItemClick = (index) => {
+
+    
+ 
     setActiveIndex(index);
   };
+  const [show, setShow] = useState(false);
 
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true)
+const openModal = () => {
+  setShowModal(true);
+};
+
+const closeModal = () => {
+  setShowModal(false);
+};
   const buttonList = [
     { text: "All Orders", index: 0, id: "" },
     { text: "Preparing", index: 1, id: "1" },
@@ -58,6 +82,20 @@ const KitchenOrderList = () => {
       clearInterval(intervalId);
     };
   }, []);
+  const options = [
+    { label: 'BBQ Station', value: 1 },
+    { label: 'Live Station', value: 2 },
+    { label: 'Cold Bar1', value: 3 },
+
+    // Add more options as needed
+  ];
+  const handleSelectChange = (selected) => {
+    setSelectedValue(selected);
+    closeModal()
+  };
+  const props = {
+    selectedValue
+  }
   return (
     <PageLayoutKds>
       
@@ -101,7 +139,7 @@ const KitchenOrderList = () => {
           />
 
           <Button
-            // onClick={openModal}
+            onClick={openModal}
             className={" cus-mt-5 "}
           >
             <FontAwesomeIcon
@@ -110,28 +148,35 @@ const KitchenOrderList = () => {
               style={{ color: "#5e5d72" }}
             />
           </Button>
-          {/* <CusModel
+          <CusModel
             showModal={showModal}
             closeModal={closeModal}
             modalTitle={
               <>
-                <span className="bold f-20">Control Pannel</span> TIS Software
-                12.3.45.0
+                <span className="bold f-20">Control Pannel</span> 
               </>
             }
             modalBody={
               <>
-                <ControlPanel data={row1} />
+              <Multiselect
+        options={options}
+        selectedValues={selectedValue}
+        onSelect={handleSelectChange}
+        singleSelect 
+        displayValue="label" 
+        placeholder="Select The Station" 
+      />
+                {/* <ControlPanel data={row1} />
+                <hr /> */}
+                {/* <ControlPanel data={row2} />
                 <hr />
-                <ControlPanel data={row2} />
-                <hr />
-                <ControlPanel data={row3} />
+                <ControlPanel data={row3} /> */}
               </>
             }
             headerClassName="multiSelect-devices-model-header"
             bodyClassName="multiSelect-devices-model"
             footerClassName="multiSelect-devices-model-footer"
-          /> */}
+          />
 
           <Button
             onClick={() => {
@@ -154,7 +199,7 @@ const KitchenOrderList = () => {
           <Col md={12} style={{ width: "100%", backgroundColor: change ? "" : "#f8f8f8" }}>
             {tabs.map(
               (TabComponent, index) =>
-                activeIndex === index && <TabComponent key={index}  />
+                activeIndex === index && <TabComponent key={index} {...props} />
             )}
         </Col>
       

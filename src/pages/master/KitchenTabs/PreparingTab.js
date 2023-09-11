@@ -6,12 +6,18 @@ import { RingLoader } from "react-spinners";
 import { css } from "@emotion/react";
 import CountDownSecResult from "../../../helpers/KDS/CountDownSecResult";
 
-function PreparingTab({ isOrderUpdating }) {
+function PreparingTab({ isOrderUpdating,selectedValue }) {
   const [orders, setOrders] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
   // const stationId = "md_station_id: 1";
-  const stationId = 1;
+  const [stationId, setStationId] = useState('')
+  
+  useEffect(() => {
+    if (selectedValue.length > 0) {
+      setStationId(selectedValue[0].value);
+    }
+  }, [selectedValue]);
 
   const [statusChanged, setStatusChanged] = useState(false);
 
@@ -19,7 +25,7 @@ function PreparingTab({ isOrderUpdating }) {
     setIsLoading(true);
 
     fetchOrdersForStation();
-  }, [ stationId]);
+  }, [ ]);
 
   async function fetchOrdersForStation() {
     try {

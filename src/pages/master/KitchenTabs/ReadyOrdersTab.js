@@ -7,16 +7,20 @@ import { useState } from "react";
 import { css } from "@emotion/react";
 import { RingLoader } from "react-spinners";
 
-function ReadyOrdersTab() {
+function ReadyOrdersTab({selectedValue}) {
   const [orders, setOrders] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   // const stationId = "md_station_id: 1";
-  const stationId = 1;
-
+  const [stationId, setStationId] = useState('')
+  useEffect(() => {
+    if (selectedValue.length > 0) {
+      setStationId(selectedValue[0].value);
+    }
+  }, [selectedValue]);
   useEffect(() => {
     setIsLoading(true);
     fetchOrdersForStation();
-  }, [stationId]);
+  }, []);
 
   async function fetchOrdersForStation() {
     try {
@@ -25,13 +29,13 @@ function ReadyOrdersTab() {
         {
           // md_station_id: 1,
           stationId: stationId,
-
           filter: "ready",
         }
       );
 
-      setIsLoading(false);
       setOrders(response.data);
+      setIsLoading(false);
+
     } catch (error) {
       console.error("Error fetching orders:", error);
     }

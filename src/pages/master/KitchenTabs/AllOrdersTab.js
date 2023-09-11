@@ -5,21 +5,28 @@ import axios from "axios";
 import { RingLoader } from "react-spinners";
 import { css } from "@emotion/react";
 import CountDownSecResult from "../../../helpers/KDS/CountDownSecResult";
+import { HandleNotification } from "../../../components/elements/Alert";
 
-function AllOrdersTab({ isOrderUpdating }) {
+function AllOrdersTab({ isOrderUpdating, selectedValue }) {
   const [orders, setOrders] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-
+const [stationId, setStationId] = useState('')
   // const stationId = "md_station_id: 1";
-  const stationId = 1;
-
+  useEffect(() => {
+    if (selectedValue.length > 0) {
+      setStationId(selectedValue[0].value);
+    }
+  }, [selectedValue]);
+  
+  
+  
   const [statusChanged, setStatusChanged] = useState(false);
+ 
 
   useEffect(() => {
     setIsLoading(true);
-
     fetchOrdersForStation();
-  }, [ stationId]);
+  }, []);
 
   async function fetchOrdersForStation() {
     try {
@@ -30,7 +37,7 @@ function AllOrdersTab({ isOrderUpdating }) {
           stationId: stationId,
         }
       );
-      // console.log(response);
+      console.log(response.data);
       setOrders(response.data);
       setIsLoading(false);
     } catch (error) {
@@ -100,7 +107,7 @@ function AllOrdersTab({ isOrderUpdating }) {
     order.td_sale_order_item.filter(
       (item) =>
         item.order_item_status !== "ready" &&
-        item.md_product.stations.some(
+        item.md_product.stations?.some(
           (station) => station.md_station_id === stationId
         )
     )
@@ -113,7 +120,7 @@ function AllOrdersTab({ isOrderUpdating }) {
   const filteredOrders = orders.filter((order) =>
     itemOrderIds.includes(order.td_sale_order_id)
   );
-  // console.log(filteredOrders);
+  
   return (
     <div className="kitchen-order-main-wrapper margin ">
       {isLoading ? (
@@ -169,12 +176,21 @@ function AllOrdersTab({ isOrderUpdating }) {
               <CardLayout className={"p-0 rounded"}>
                 <Box
                   className={"kitchen-order-card-top rounded-top"}
-                  style={{ justifyContent: "center" }}
+                  // style={{ justifyContent: "center" }}
+                  style={{
+                    justifyContent: "center",
+                    // backgroundColor:
+                      // stationId === 1 ? "" : stationId === 2 ? "green" : "blue",
+                  }}
+
                 >
+               
+
                   {item?.td_sale_order_item.map((product, i) =>
                     product.md_product.stations.map((station) =>
                       station.md_station_id === stationId ? (
-                        <Text key={station.station_name}>
+                        
+                        <Text key={station.station_name} >
                           {station.station_name}
                         </Text>
                       ) : null

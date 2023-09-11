@@ -7,20 +7,27 @@ import { css } from "@emotion/react";
 function DelayOrdersTab({
   
   isOrderUpdating,
-  CountDownSecResult,
+  selectedValue
 }) {
   const [orders, setOrders] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [elapsedTime, setElapsedTime] = useState(0);
 
   // const stationId = "md_station_id: 1";
-  const stationId = 1;
+  // const stationId = 1;
+  const [stationId, setStationId] = useState('')
+  // const stationId = "md_station_id: 1";
+  useEffect(() => {
+    if (selectedValue.length > 0) {
+      setStationId(selectedValue[0].value);
+    }
+  }, [selectedValue]);
 
   useEffect(() => {
     setIsLoading(true);
 
     fetchOrdersForStation();
-  }, [stationId]);
+  }, []);
 
   async function fetchOrdersForStation() {
     try {
