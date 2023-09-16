@@ -51,7 +51,7 @@ const CountDownSecResult = ({ countdownValue ,onCountingUpStart}) => {
       )}
       {!countingUp && (
         <Countdown
-          date={moment(countdownValue).valueOf() + 20 * 60000} // Changed .10 to 0.10
+          date={moment(countdownValue).valueOf() } // Changed .10 to 0.10
           renderer={({ minutes, seconds }) => (
             <text>
               {minutes}:{seconds}

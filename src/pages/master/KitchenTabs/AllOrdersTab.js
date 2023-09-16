@@ -5,29 +5,30 @@ import axios from "axios";
 import { RingLoader } from "react-spinners";
 import { css } from "@emotion/react";
 import CountDownSecResult from "../../../helpers/KDS/CountDownSecResult";
-import { HandleNotification } from "../../../components/elements/Alert";
+import { HandleNotification } from "../../../components/elements/AlertKDS";
+import { useRef } from "react";
 
-function AllOrdersTab({ isOrderUpdating, selectedValue }) {
+function AllOrdersTab({ selectedValue, notificatinSettings, isOrderUpdating }) {
   const [orders, setOrders] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-const [stationId, setStationId] = useState('')
+  const [stationId, setStationId] = useState("");
+  const prevFilteredOrdersLength = useRef(0);
+  const [stationName, setStationName] = useState("");
+  const [statusChanged, setStatusChanged] = useState(false);
+
   // const stationId = "md_station_id: 1";
   useEffect(() => {
     if (selectedValue.length > 0) {
       setStationId(selectedValue[0].value);
+      setStationName(selectedValue[0].label);
+
     }
   }, [selectedValue]);
-  
-  
-  
-  const [statusChanged, setStatusChanged] = useState(false);
- 
 
   useEffect(() => {
     setIsLoading(true);
     fetchOrdersForStation();
   }, []);
-
   async function fetchOrdersForStation() {
     try {
       const response = await axios.post(
@@ -112,15 +113,54 @@ const [stationId, setStationId] = useState('')
         )
     )
   );
-  // console.log(items);
-  // Create an array of td_sale_order_id values from items
+
   const itemOrderIds = items.map((item) => item.td_sale_order_id);
 
-  // Filter orders based on matching td_sale_order_id
-  const filteredOrders = orders.filter((order) =>
-    itemOrderIds.includes(order.td_sale_order_id)
+  const filteredOrders = orders
+    .filter((order) => itemOrderIds.includes(order.td_sale_order_id))
+    .reverse();
+
+  // useEffect(() => {
+  //   const fetchDataInterval = setInterval(() => {
+  //     // setIsLoading(true);
+  //     fetchOrdersForStation(selectedValue);
+  //   }, 7000);
+
+  //   return () => {
+  //     clearInterval(fetchDataInterval);
+  //   };
+  // }, []);
+
+  let storedPrevFilteredOrdersLength = parseInt(
+    localStorage.getItem("prevFilteredOrdersLength"),
+    10
   );
-  
+
+  useEffect(() => {
+    storedPrevFilteredOrdersLength = filteredOrders.length;
+  }, [stationId]);
+
+  useEffect(() => {
+    setTimeout(() => {
+      if (
+        storedPrevFilteredOrdersLength &&
+        filteredOrders.length > storedPrevFilteredOrdersLength
+      ) {
+        console.log("Notification triggered");
+        HandleNotification(stationName, notificatinSettings);
+      }
+
+      prevFilteredOrdersLength.current = filteredOrders.length;
+
+      storedPrevFilteredOrdersLength = filteredOrders.length;
+
+      localStorage.setItem(
+        "prevFilteredOrdersLength",
+        storedPrevFilteredOrdersLength.toString()
+      );
+    }, 1000);
+  }, [filteredOrders]);
+
   return (
     <div className="kitchen-order-main-wrapper margin ">
       {isLoading ? (
@@ -180,17 +220,13 @@ const [stationId, setStationId] = useState('')
                   style={{
                     justifyContent: "center",
                     // backgroundColor:
-                      // stationId === 1 ? "" : stationId === 2 ? "green" : "blue",
+                    // stationId === 1 ? "" : stationId === 2 ? "green" : "blue",
                   }}
-
                 >
-               
-
                   {item?.td_sale_order_item.map((product, i) =>
                     product.md_product.stations.map((station) =>
                       station.md_station_id === stationId ? (
-                        
-                        <Text key={station.station_name} >
+                        <Text key={station.station_name}>
                           {station.station_name}
                         </Text>
                       ) : null
@@ -247,11 +283,20 @@ const [stationId, setStationId] = useState('')
                   </Box>
 
                   <Box className={"kitchen-order-ready-box-right rounded-end"}>
-                    <CountDownSecResult
-                      countdownValue={item.createdAt}
-                      onCountingUpStart={() => handleDelayStatus(item)}
-                    />{" "}
-                  </Box>
+  {item?.td_sale_order_item.map((product, i) => (
+    product.md_product && (
+      <div key={i}>
+        {console.log('Cooking Time:', product.md_product.cooking_time)}
+        <CountDownSecResult
+          countdownValue={product.md_product.cooking_time}
+          onCountingUpStart={() => handleDelayStatus(item)}
+        />
+      </div>
+    )
+  ))}
+</Box>
+
+
                 </Box>
               </CardLayout>
             </Box>

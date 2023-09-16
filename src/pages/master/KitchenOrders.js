@@ -3,7 +3,6 @@ import PageLayoutKds from "../../layouts/PageLayoutKds";
 import { useState } from "react";
 import { Col, Row, Button as RButton } from "react-bootstrap";
 import { CardLayout } from "../../components/cards";
-import CusTabButtons from "../../components/elements/CusTabButtons";
 import { Box, Button  } from "../../components/elements";
 import { useSelector } from "react-redux";
 import { ThemeContext } from "../../context/Themes";
@@ -14,7 +13,6 @@ import { useMemo } from "react";
 import Countdown from "react-countdown";
 import moment from "moment";
 import { HandleNotification } from "../../components/elements/Alert";
-import axios from "axios";
 import PreparingTab from "./KitchenTabs/PreparingTab";
 import AllOrdersTab from "./KitchenTabs/AllOrdersTab";
 import DelayOrdersTab from "./KitchenTabs/DelayOrdersTab";
@@ -27,6 +25,7 @@ import cpButtonsData from "../../data/ControlPannelButtonData";
 import ControlPanel from "../../pages/master/ControlPanel";
 import CusModel from "../../components/popupsModel/CusModel";
 import Multiselect from "multiselect-react-dropdown";
+import CusTabButtonsKds from "../../components/elements/CusTabButtonsKds";
 
 const KitchenOrderList = () => {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -41,14 +40,13 @@ const KitchenOrderList = () => {
   const [change, setChange] = useState(false)
   const [showModal, setShowModal] = useState(false);
   const [selectedValue, setSelectedValue] = useState('');
-
-
+ 
   const handleItemClick = (index) => {
 
-    
  
     setActiveIndex(index);
   };
+
   const [show, setShow] = useState(false);
 
   const handleClose = () => setShow(false);
@@ -60,6 +58,9 @@ const openModal = () => {
 const closeModal = () => {
   setShowModal(false);
 };
+
+
+
   const buttonList = [
     { text: "All Orders", index: 0, id: "" },
     { text: "Preparing", index: 1, id: "1" },
@@ -93,8 +94,21 @@ const closeModal = () => {
     setSelectedValue(selected);
     closeModal()
   };
+  const notificatinSettings = {
+    backgroundColor: "#ab5172",
+    padding: "30px",
+    borderRadius: "15px",
+    width: "400px",
+    height: "150px",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    fontSize: "24px",
+  }
   const props = {
-    selectedValue
+    selectedValue,
+    notificatinSettings,
   }
   return (
     <PageLayoutKds>
@@ -102,7 +116,7 @@ const closeModal = () => {
         
         <Col md={12} className={"f-13 cusTabsbuttons"} >
         
-      <Box className="mc-header-group height" style={{  backgroundColor: change ? "" : "#f08143" }} >
+      <Box className="mc-header-group height" style={{  backgroundColor: change ? "" : "#f08143d4" }} >
 
           <Box className="mc-header-left">
           <Box className={"logo-div"}>
@@ -116,7 +130,7 @@ const closeModal = () => {
         
         <Box className="mc-header-left" style={{marginLeft:"30px"}}>
             {buttonList.map((buttonText) => (
-              <CusTabButtons
+              <CusTabButtonsKds
                 key={buttonText.index}
                 buttonText={buttonText}
                 activeIndex={activeIndex}
@@ -199,7 +213,7 @@ const closeModal = () => {
           <Col md={12} style={{ width: "100%", backgroundColor: change ? "" : "#f8f8f8" }}>
             {tabs.map(
               (TabComponent, index) =>
-                activeIndex === index && <TabComponent key={index} {...props} />
+                activeIndex === index && <TabComponent key={index} {...props}  />
             )}
         </Col>
       

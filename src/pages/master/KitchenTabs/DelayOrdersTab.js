@@ -118,7 +118,7 @@ const itemOrderIds = items.map((item) => item.td_sale_order_id);
 // Filter orders based on matching td_sale_order_id
 const filteredOrders = orders.filter((order) =>
   itemOrderIds.includes(order.td_sale_order_id)
-);
+).reverse();
 
   return (
     <div className="kitchen-order-main-wrapper margin" >
