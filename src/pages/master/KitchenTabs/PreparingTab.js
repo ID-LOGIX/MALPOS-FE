@@ -119,7 +119,8 @@ function PreparingTab({ isOrderUpdating,selectedValue }) {
   const filteredOrders = orders.filter((order) =>
     itemOrderIds.includes(order.td_sale_order_id)
   ).reverse();
-  // console.log(filteredOrders);
+  const cookingTime = items.map((item) => item.md_product.cooking_time);
+
   return (
     <div className="kitchen-order-main-wrapper margin ">
       {isLoading ? (
@@ -237,10 +238,14 @@ function PreparingTab({ isOrderUpdating,selectedValue }) {
                   </Box>
 
                   <Box className={"kitchen-order-ready-box-right rounded-end"}>
-                    <CountDownSecResult
-                      countdownValue={item.createdAt}
-                      onCountingUpStart={() => handleDelayStatus(item)}
-                    />{" "}
+                    {item?.td_sale_order_item.map((orderItem, td_sale_order_item_id) => (
+                      <CountDownSecResult
+                        key={td_sale_order_item_id} // Use a unique key here (replace with an appropriate unique identifier)
+                        countdownValue={orderItem}
+                        onCountingUpStart={() => handleDelayStatus(item)}
+                        cookingTime={cookingTime}
+                      />
+                    ))}
                   </Box>
                 </Box>
               </CardLayout>

@@ -8,7 +8,7 @@ import CountDownSecResult from "../../../helpers/KDS/CountDownSecResult";
 import { HandleNotification } from "../../../components/elements/AlertKDS";
 import { useRef } from "react";
 
-function AllOrdersTab({ selectedValue, notificatinSettings, isOrderUpdating }) {
+function AllOrdersTab({ selectedValue, notificatinSettings, isOrderUpdating,change }) {
   const [orders, setOrders] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [stationId, setStationId] = useState("");
@@ -21,7 +21,6 @@ function AllOrdersTab({ selectedValue, notificatinSettings, isOrderUpdating }) {
     if (selectedValue.length > 0) {
       setStationId(selectedValue[0].value);
       setStationName(selectedValue[0].label);
-
     }
   }, [selectedValue]);
 
@@ -38,7 +37,7 @@ function AllOrdersTab({ selectedValue, notificatinSettings, isOrderUpdating }) {
           stationId: stationId,
         }
       );
-      console.log(response.data);
+      // console.log(response.data);
       setOrders(response.data);
       setIsLoading(false);
     } catch (error) {
@@ -119,17 +118,18 @@ function AllOrdersTab({ selectedValue, notificatinSettings, isOrderUpdating }) {
   const filteredOrders = orders
     .filter((order) => itemOrderIds.includes(order.td_sale_order_id))
     .reverse();
+  const cookingTime = items.map((item) => item.md_product.cooking_time);
 
-  // useEffect(() => {
-  //   const fetchDataInterval = setInterval(() => {
-  //     // setIsLoading(true);
-  //     fetchOrdersForStation(selectedValue);
-  //   }, 7000);
+  useEffect(() => {
+    const fetchDataInterval = setInterval(() => {
+      // setIsLoading(true);
+      fetchOrdersForStation(selectedValue);
+    }, 7000);
 
-  //   return () => {
-  //     clearInterval(fetchDataInterval);
-  //   };
-  // }, []);
+    return () => {
+      clearInterval(fetchDataInterval);
+    };
+  }, []);
 
   let storedPrevFilteredOrdersLength = parseInt(
     localStorage.getItem("prevFilteredOrdersLength"),
@@ -146,7 +146,7 @@ function AllOrdersTab({ selectedValue, notificatinSettings, isOrderUpdating }) {
         storedPrevFilteredOrdersLength &&
         filteredOrders.length > storedPrevFilteredOrdersLength
       ) {
-        console.log("Notification triggered");
+        // console.log("Notification triggered");
         HandleNotification(stationName, notificatinSettings);
       }
 
@@ -162,7 +162,7 @@ function AllOrdersTab({ selectedValue, notificatinSettings, isOrderUpdating }) {
   }, [filteredOrders]);
 
   return (
-    <div className="kitchen-order-main-wrapper margin ">
+    <div className="kitchen-order-main-wrapper margin " >
       {isLoading ? (
         <div className="spinner-container">
           <div className="spinner">
@@ -283,20 +283,15 @@ function AllOrdersTab({ selectedValue, notificatinSettings, isOrderUpdating }) {
                   </Box>
 
                   <Box className={"kitchen-order-ready-box-right rounded-end"}>
-  {item?.td_sale_order_item.map((product, i) => (
-    product.md_product && (
-      <div key={i}>
-        {console.log('Cooking Time:', product.md_product.cooking_time)}
-        <CountDownSecResult
-          countdownValue={product.md_product.cooking_time}
-          onCountingUpStart={() => handleDelayStatus(item)}
-        />
-      </div>
-    )
-  ))}
-</Box>
-
-
+                    {item?.td_sale_order_item.map((orderItem,td_sale_order_item_id) => (
+                      <CountDownSecResult
+                        key={td_sale_order_item_id} // Use a unique key here (replace with an appropriate unique identifier)
+                        countdownValue={orderItem}
+                        onCountingUpStart={() => handleDelayStatus(item)}
+                        cookingTime={cookingTime}
+                      />
+                    ))}
+                  </Box>
                 </Box>
               </CardLayout>
             </Box>

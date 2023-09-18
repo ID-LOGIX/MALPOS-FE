@@ -109,6 +109,7 @@ const closeModal = () => {
   const props = {
     selectedValue,
     notificatinSettings,
+    change
   }
   return (
     <PageLayoutKds>
