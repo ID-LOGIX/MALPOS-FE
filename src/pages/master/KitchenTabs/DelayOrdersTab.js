@@ -4,20 +4,19 @@ import { CardLayout } from "../../../components/cards";
 import axios from "axios";
 import { RingLoader } from "react-spinners";
 import { css } from "@emotion/react";
-import moment from 'moment';
+import moment from "moment";
+import CountUpSecResult from "../../../helpers/KDS/CountUpSecResult";
 
-function DelayOrdersTab({
-  
-  isOrderUpdating,
-  selectedValue
-}) {
+function DelayOrdersTab({ isOrderUpdating, selectedValue, change }) {
   const [orders, setOrders] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
+
   // const [elapsedTime, setElapsedTime] = useState(0);
 
   // const stationId = "md_station_id: 1";
   // const stationId = 1;
-  const [stationId, setStationId] = useState('')
+  const [stationId, setStationId] = useState("");
   // const stationId = "md_station_id: 1";
   useEffect(() => {
     if (selectedValue.length > 0) {
@@ -53,6 +52,7 @@ function DelayOrdersTab({
   }
 
   const hanldeOrderStatus = async (item) => {
+    setIsUpdating(true);
     const itemIds =
       item.td_sale_order_item?.map(
         (orderItem) => orderItem.td_sale_order_item_id
@@ -80,69 +80,31 @@ function DelayOrdersTab({
       }
     } catch (error) {
       console.error("Error updating order status:", error);
+    } finally {
+      setIsUpdating(false);
     }
   };
- 
+
   let items = orders?.flatMap((order) =>
-  order.td_sale_order_item.filter(
-    (item) =>
-      item.order_item_status == "delay" &&
-      item.md_product.stations.some(
-        (station) => station.md_station_id === stationId
-      )
-  )
-);
-// console.log(items);
-// Create an array of td_sale_order_id values from items
-const itemOrderIds = items.map((item) => item.td_sale_order_id);
+    order.td_sale_order_item.filter(
+      (item) =>
+        item.order_item_status == "delay" &&
+        item.md_product.stations.some(
+          (station) => station.md_station_id === stationId
+        )
+    )
+  );
+  // console.log(items);
+  const itemOrderIds = items.map((item) => item.td_sale_order_id);
 
-// Filter orders based on matching td_sale_order_id
-const filteredOrders = orders.filter((order) =>
-  itemOrderIds.includes(order.td_sale_order_id)
-).reverse();
-const cookingTimes = items.map((item) => item.md_product.cooking_time);
-const createdAt = items.map((item) => item.created_at);
+  const filteredOrders = orders
+    .filter((order) => itemOrderIds.includes(order.td_sale_order_id))
+    .reverse();
 
-const [elapsedTime, setElapsedTime] = useState(0);
+  const cookingTime = items.map((item) => item.md_product.cooking_time);
 
-const formatTime = (elapsedSeconds) => {
-  const minutes = Math.floor(elapsedSeconds / 60);
-  const seconds = elapsedSeconds % 60;
-  const formattedMinutes = minutes.toString().padStart(2, '0');
-  const formattedSeconds = seconds.toString().padStart(2, '0');
-  return `${formattedMinutes}:${formattedSeconds}`;
-};
-
-const startTimer = () => {
-  return setInterval(() => {
-    setElapsedTime((prevElapsedTime) => prevElapsedTime + 1);
-  }, 1000);
-};
-
-useEffect(() => {
-  // Calculate the maximum elapsed time among all items
-  const now = Math.floor(Date.now() / 1000); // Convert to seconds
-  let maxElapsedSeconds = 0;
-
-  for (let i = 0; i < items.length; i++) {
-    const createdAtInSeconds = Math.floor(new Date(createdAt[i]).getTime() / 1000); // Convert to seconds
-    const elapsedSeconds = now - createdAtInSeconds - cookingTimes[i] * 60;
-    if (elapsedSeconds > maxElapsedSeconds) {
-      maxElapsedSeconds = elapsedSeconds;
-    }
-  }
-
-  setElapsedTime(maxElapsedSeconds);
-
-  // Start the timer
-  const intervalId = startTimer();
-
-  return () => {
-    clearInterval(intervalId);
-  };
-}, [items, cookingTimes, createdAt]);
   return (
-    <div className="kitchen-order-main-wrapper margin" >
+    <div className="kitchen-order-main-wrapper margin">
       {isLoading ? (
         <div className="spinner-container">
           <div className="spinner">
@@ -153,13 +115,13 @@ useEffect(() => {
         filteredOrders?.map((item, index) => {
           // if (item.status === "delay") {
           return (
-            <Box key={index} className={"kitchen-order-main mb-3 width"} >
+            <Box key={index} className={"kitchen-order-main mb-3 width"}>
               <h4
                 style={{
                   display: "flex",
                   justifyContent: "space-between",
                   alignItems: "center",
-                  marginTop:"20px"
+                  marginTop: "20px",
                 }}
               >
                 <span style={{ fontWeight: "lighter", fontSize: "0.9em" }}>
@@ -188,7 +150,7 @@ useEffect(() => {
               </h4>
 
               <Text className={"pb-2"}>
-              First Floor/الطابق الأول{" "}
+                First Floor/الطابق الأول{" "}
                 {item.order_type === "Table" && `Table ${item.table_no}`}
                 {item.order_type !== "Table" && item.order_type}
               </Text>
@@ -237,7 +199,7 @@ useEffect(() => {
                           orderItem.md_product.product_name ? (
                             <span>{orderItem.md_product.product_name}</span>
                           ) : (
-                            ''
+                            ""
                           )}
                           <div style={{ color: "#999" }}>
                             {orderItem.comment
@@ -252,22 +214,27 @@ useEffect(() => {
 
                 <Box className={"d-flex kitchen-order-ready-box px-3 py-4"}>
                   <Box
-                    className="kitchen-order-ready-box-left bg-green clickable"
+                    className={`kitchen-order-ready-box-left  clickable ${
+                      isUpdating ? "pressed" : ""
+                    }`} style={{backgroundColor: change ? "#2b3750":'#1a9f53'}}
                     onClick={() => hanldeOrderStatus(item)}
-                    disabled={isOrderUpdating}
+                    disabled={isUpdating}
                   >
-                    Ready
+                    {isUpdating ? (
+                      <div className="loading-circle"></div>
+                    ) : (
+                      "Ready"
+                    )}
                   </Box>
 
-                  <Box
-                    className={"kitchen-order-ready-box-right rounded-end"}
-                    style={{ color: "red" }}
-                  >
-                   
-                      <Text>
-                        {formatTime(elapsedTime)}
-                      </Text>
-                     
+                  <Box className={"kitchen-order-ready-box-right rounded-end"}>
+                    {item?.td_sale_order_item.map((orderItem) => (
+                      <CountUpSecResult
+                        key={orderItem.td_sale_order_item_id}
+                        countdownValue={orderItem}
+                        cookingTime={cookingTime}
+                      />
+                    ))}
                   </Box>
                 </Box>
               </CardLayout>

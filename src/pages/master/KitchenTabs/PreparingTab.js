@@ -6,9 +6,11 @@ import { RingLoader } from "react-spinners";
 import { css } from "@emotion/react";
 import CountDownSecResult from "../../../helpers/KDS/CountDownSecResult";
 
-function PreparingTab({ isOrderUpdating,selectedValue }) {
+function PreparingTab({ isOrderUpdating,selectedValue, change }) {
   const [orders, setOrders] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
+
 
   // const stationId = "md_station_id: 1";
   const [stationId, setStationId] = useState('')
@@ -45,6 +47,8 @@ function PreparingTab({ isOrderUpdating,selectedValue }) {
   }
 
   const hanldeOrderStatus = async (item) => {
+    setIsUpdating(true);
+
     setStatusChanged(true);
     const itemIds =
       item.td_sale_order_item?.map(
@@ -75,6 +79,8 @@ function PreparingTab({ isOrderUpdating,selectedValue }) {
       }
     } catch (error) {
       console.error("Error updating order status:", error);
+    } finally {
+      setIsUpdating(false);
     }
   };
 
@@ -229,12 +235,18 @@ function PreparingTab({ isOrderUpdating,selectedValue }) {
                 </Box>
 
                 <Box className={"d-flex kitchen-order-ready-box px-3 py-4"}>
-                  <Box
-                    className="kitchen-order-ready-box-left bg-green clickable"
+                <Box
+                    className={`kitchen-order-ready-box-left  clickable ${
+                      isUpdating ? "pressed" : ""
+                    }`} style={{backgroundColor: change ? "#2b3750":'#1a9f53'}}
                     onClick={() => hanldeOrderStatus(item)}
-                    disabled={isOrderUpdating}
+                    disabled={isUpdating}
                   >
-                    Ready
+                    {isUpdating ? (
+                      <div className="loading-circle"></div>
+                    ) : (
+                      "Ready"
+                    )}
                   </Box>
 
                   <Box className={"kitchen-order-ready-box-right rounded-end"}>

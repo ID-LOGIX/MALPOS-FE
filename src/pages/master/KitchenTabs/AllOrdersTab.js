@@ -11,6 +11,8 @@ import { useRef } from "react";
 function AllOrdersTab({ selectedValue, notificatinSettings, isOrderUpdating,change }) {
   const [orders, setOrders] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
+
   const [stationId, setStationId] = useState("");
   const prevFilteredOrdersLength = useRef(0);
   const [stationName, setStationName] = useState("");
@@ -46,6 +48,8 @@ function AllOrdersTab({ selectedValue, notificatinSettings, isOrderUpdating,chan
   }
 
   const hanldeOrderStatus = async (item) => {
+    setIsUpdating(true);
+
     setStatusChanged(true);
     const itemIds =
       item.td_sale_order_item?.map(
@@ -76,6 +80,8 @@ function AllOrdersTab({ selectedValue, notificatinSettings, isOrderUpdating,chan
       }
     } catch (error) {
       console.error("Error updating order status:", error);
+     } finally {
+      setIsUpdating(false);
     }
   };
 
@@ -112,7 +118,7 @@ function AllOrdersTab({ selectedValue, notificatinSettings, isOrderUpdating,chan
         )
     )
   );
-
+// console.log(items)
   const itemOrderIds = items.map((item) => item.td_sale_order_id);
 
   const filteredOrders = orders
@@ -158,7 +164,7 @@ function AllOrdersTab({ selectedValue, notificatinSettings, isOrderUpdating,chan
         "prevFilteredOrdersLength",
         storedPrevFilteredOrdersLength.toString()
       );
-    }, 1000);
+    }, 2000);
   }, [filteredOrders]);
 
   return (
@@ -274,18 +280,31 @@ function AllOrdersTab({ selectedValue, notificatinSettings, isOrderUpdating,chan
                 </Box>
 
                 <Box className={"d-flex kitchen-order-ready-box px-3 py-4"}>
-                  <Box
+                  {/* <Box
                     className="kitchen-order-ready-box-left bg-green clickable"
                     onClick={() => hanldeOrderStatus(item)}
                     disabled={isOrderUpdating}
                   >
                     Ready
+                  </Box> */}
+                  <Box
+                    className={`kitchen-order-ready-box-left  clickable ${
+                      isUpdating ? "pressed" : ""
+                    }`} style={{backgroundColor: change ? "#2b3750":'#1a9f53'}}
+                    onClick={() => hanldeOrderStatus(item)}
+                    disabled={isUpdating}
+                  >
+                    {isUpdating ? (
+                      <div className="loading-circle"></div>
+                    ) : (
+                      "Ready"
+                    )}
                   </Box>
 
                   <Box className={"kitchen-order-ready-box-right rounded-end"}>
-                    {item?.td_sale_order_item.map((orderItem,td_sale_order_item_id) => (
+                    {item?.td_sale_order_item.map((orderItem) => (
                       <CountDownSecResult
-                        key={td_sale_order_item_id} // Use a unique key here (replace with an appropriate unique identifier)
+                        key={orderItem.td_sale_order_item_id} 
                         countdownValue={orderItem}
                         onCountingUpStart={() => handleDelayStatus(item)}
                         cookingTime={cookingTime}

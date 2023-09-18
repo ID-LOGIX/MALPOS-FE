@@ -112,12 +112,13 @@ const closeModal = () => {
     change
   }
   return (
-    <PageLayoutKds>
+    <PageLayoutKds className={"PageLayoutKds"}>
       
         
         <Col md={12} className={"f-13 cusTabsbuttons"} >
         
-      <Box className="mc-header-group height" style={{  backgroundColor: change ? "" : "#f08143d4" }} >
+      <Box className="mc-header-group height" style={{  backgroundColor: change ? "#15161659" : "#f08143d4" }} >
+
 
           <Box className="mc-header-left">
           <Box className={"logo-div"}>
@@ -136,6 +137,7 @@ const closeModal = () => {
                 buttonText={buttonText}
                 activeIndex={activeIndex}
                 handleItemClick={handleItemClick}
+                change = {change}
               />
             ))}
             </Box>
@@ -212,6 +214,7 @@ const closeModal = () => {
          
           </Col>
           <Col md={12} style={{ width: "100%", backgroundColor: change ? "" : "#f8f8f8" }}>
+            
             {tabs.map(
               (TabComponent, index) =>
                 activeIndex === index && <TabComponent key={index} {...props}  />
