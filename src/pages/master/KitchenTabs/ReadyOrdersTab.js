@@ -56,7 +56,7 @@ function ReadyOrdersTab({selectedValue}) {
   // Filter orders based on matching td_sale_order_id
   const filteredOrders = orders.filter((order) =>
     itemOrderIds.includes(order.td_sale_order_id)
-  );
+  ).reverse();
   // console.log(filteredOrders);
   return (
     <div className="kitchen-order-main-wrapper margin">

@@ -4,6 +4,8 @@ import { CardLayout } from "../../../components/cards";
 import axios from "axios";
 import { RingLoader } from "react-spinners";
 import { css } from "@emotion/react";
+import moment from 'moment';
+
 function DelayOrdersTab({
   
   isOrderUpdating,
@@ -11,7 +13,7 @@ function DelayOrdersTab({
 }) {
   const [orders, setOrders] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [elapsedTime, setElapsedTime] = useState(0);
+  // const [elapsedTime, setElapsedTime] = useState(0);
 
   // const stationId = "md_station_id: 1";
   // const stationId = 1;
@@ -80,28 +82,7 @@ function DelayOrdersTab({
       console.error("Error updating order status:", error);
     }
   };
-  const formatTime = (seconds) => {
-    const minutes = Math.floor(seconds / 60);
-    const remainingSeconds = seconds % 60;
-    const formattedMinutes = minutes.toString().padStart(2, "0");
-    const formattedSeconds = remainingSeconds.toString().padStart(2, "0");
-    return `${formattedMinutes}:${formattedSeconds}`;
-  };
-
-  // Function to start the timer
-  const startTimer = () => {
-    return setInterval(() => {
-      setElapsedTime((prevElapsedTime) => prevElapsedTime + 1);
-    }, 1000);
-  };
-
-  useEffect(() => {
-    const intervalId = startTimer();
-
-    return () => {
-      clearInterval(intervalId);
-    };
-  }, []);
+ 
   let items = orders?.flatMap((order) =>
   order.td_sale_order_item.filter(
     (item) =>
@@ -118,8 +99,48 @@ const itemOrderIds = items.map((item) => item.td_sale_order_id);
 // Filter orders based on matching td_sale_order_id
 const filteredOrders = orders.filter((order) =>
   itemOrderIds.includes(order.td_sale_order_id)
-);
+).reverse();
+const cookingTimes = items.map((item) => item.md_product.cooking_time);
+const createdAt = items.map((item) => item.created_at);
 
+const [elapsedTime, setElapsedTime] = useState(0);
+
+const formatTime = (elapsedSeconds) => {
+  const minutes = Math.floor(elapsedSeconds / 60);
+  const seconds = elapsedSeconds % 60;
+  const formattedMinutes = minutes.toString().padStart(2, '0');
+  const formattedSeconds = seconds.toString().padStart(2, '0');
+  return `${formattedMinutes}:${formattedSeconds}`;
+};
+
+const startTimer = () => {
+  return setInterval(() => {
+    setElapsedTime((prevElapsedTime) => prevElapsedTime + 1);
+  }, 1000);
+};
+
+useEffect(() => {
+  // Calculate the maximum elapsed time among all items
+  const now = Math.floor(Date.now() / 1000); // Convert to seconds
+  let maxElapsedSeconds = 0;
+
+  for (let i = 0; i < items.length; i++) {
+    const createdAtInSeconds = Math.floor(new Date(createdAt[i]).getTime() / 1000); // Convert to seconds
+    const elapsedSeconds = now - createdAtInSeconds - cookingTimes[i] * 60;
+    if (elapsedSeconds > maxElapsedSeconds) {
+      maxElapsedSeconds = elapsedSeconds;
+    }
+  }
+
+  setElapsedTime(maxElapsedSeconds);
+
+  // Start the timer
+  const intervalId = startTimer();
+
+  return () => {
+    clearInterval(intervalId);
+  };
+}, [items, cookingTimes, createdAt]);
   return (
     <div className="kitchen-order-main-wrapper margin" >
       {isLoading ? (
@@ -224,7 +245,7 @@ const filteredOrders = orders.filter((order) =>
                               : ""}
                           </div>
                         </Text>
-                        <span>&#10004;</span>
+                        {/* <span>&#10004;</span> */}
                       </div>
                     ))}
                 </Box>

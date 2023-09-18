@@ -7939,3 +7939,15 @@ margin-left: 35px;
 .kitchen-order-main.mb-3.width {
   width: 24%;
 } 
+.floor-bg.kds {
+  color: #3c4043;
+}
+
+.floor-bg.kds.active {
+  background-color: #f07343;
+  color: #fff;
+  padding: 12px 10px;
+  font-size: 13px;
+  border-radius: 4px;
+  cursor: pointer;
+}
