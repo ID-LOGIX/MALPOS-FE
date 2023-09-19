@@ -6,12 +6,18 @@ import axios from "axios";
 import { useState } from "react";
 import { css } from "@emotion/react";
 import { RingLoader } from "react-spinners";
-
-function ReadyOrdersTab({selectedValue}) {
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faPlus,
+  faStore,
+  faBicycle,
+  faBox,
+} from "@fortawesome/free-solid-svg-icons";
+function ReadyOrdersTab({ selectedValue, backgroundClass }) {
   const [orders, setOrders] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   // const stationId = "md_station_id: 1";
-  const [stationId, setStationId] = useState('')
+  const [stationId, setStationId] = useState("");
   useEffect(() => {
     if (selectedValue.length > 0) {
       setStationId(selectedValue[0].value);
@@ -35,7 +41,6 @@ function ReadyOrdersTab({selectedValue}) {
 
       setOrders(response.data);
       setIsLoading(false);
-
     } catch (error) {
       console.error("Error fetching orders:", error);
     }
@@ -54,9 +59,9 @@ function ReadyOrdersTab({selectedValue}) {
   const itemOrderIds = items.map((item) => item.td_sale_order_id);
 
   // Filter orders based on matching td_sale_order_id
-  const filteredOrders = orders.filter((order) =>
-    itemOrderIds.includes(order.td_sale_order_id)
-  ).reverse();
+  const filteredOrders = orders
+    .filter((order) => itemOrderIds.includes(order.td_sale_order_id))
+    .reverse();
   // console.log(filteredOrders);
   return (
     <div className="kitchen-order-main-wrapper margin">
@@ -103,14 +108,36 @@ function ReadyOrdersTab({selectedValue}) {
                 </span>
               </h4>
               <Text className={"pb-2"}>
-              First Floor/الطابق الأول{" "}
-                {item.order_type === "Table" && `Table ${item.table_no}`}
-                {item.order_type !== "Table" && item.order_type}
+                <span
+                  style={{ display: "flex", justifyContent: "space-between" }}
+                >
+                  <span>
+                    First Floor/الطابق الأول{" "}
+                    {item.order_type === "Table"
+                      ? `Table ${item.table_no}`
+                      : item.order_type}{" "}
+                  </span>
+                  <span>
+                    {item.order_type === "Delivery" ? (
+                      <span>
+                        <FontAwesomeIcon icon={faBicycle} size={"1x"} />
+                      </span>
+                    ) : item.order_type === "Takeaway" ? (
+                      <span>
+                        <FontAwesomeIcon icon={faBox} size={"1x"} />
+                      </span>
+                    ) : (
+                      <span>
+                        <FontAwesomeIcon icon={faStore} size={"1x"} />
+                      </span>
+                    )}
+                  </span>
+                </span>
               </Text>
+
               <CardLayout className={"p-0 rounded"}>
                 <Box
-                  className={"kitchen-order-card-top rounded-top"}
-                  style={{ justifyContent: "center" }}
+                  className={`kitchen-order-card-top rounded-top ${backgroundClass}`}
                 >
                   <Text>
                     {item?.td_sale_order_item.map((product, i) =>
@@ -152,7 +179,7 @@ function ReadyOrdersTab({selectedValue}) {
                           orderItem.md_product.product_name ? (
                             <span>{orderItem.md_product.product_name}</span>
                           ) : (
-                            ''
+                            ""
                           )}
                           <div style={{ color: "#999" }}>
                             {orderItem.comment

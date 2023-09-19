@@ -6,8 +6,19 @@ import { RingLoader } from "react-spinners";
 import { css } from "@emotion/react";
 import moment from "moment";
 import CountUpSecResult from "../../../helpers/KDS/CountUpSecResult";
-
-function DelayOrdersTab({ isOrderUpdating, selectedValue, change }) {
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faPlus,
+  faStore,
+  faBicycle,
+  faBox,
+} from "@fortawesome/free-solid-svg-icons";
+function DelayOrdersTab({
+  isOrderUpdating,
+  selectedValue,
+  change,
+  backgroundClass,
+}) {
   const [orders, setOrders] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
@@ -150,14 +161,35 @@ function DelayOrdersTab({ isOrderUpdating, selectedValue, change }) {
               </h4>
 
               <Text className={"pb-2"}>
-                First Floor/الطابق الأول{" "}
-                {item.order_type === "Table" && `Table ${item.table_no}`}
-                {item.order_type !== "Table" && item.order_type}
+                <span
+                  style={{ display: "flex", justifyContent: "space-between" }}
+                >
+                  <span>
+                    First Floor/الطابق الأول{" "}
+                    {item.order_type === "Table"
+                      ? `Table ${item.table_no}`
+                      : item.order_type}{" "}
+                  </span>
+                  <span>
+                    {item.order_type === "Delivery" ? (
+                      <span>
+                        <FontAwesomeIcon icon={faBicycle} size={"1x"} />
+                      </span>
+                    ) : item.order_type === "Takeaway" ? (
+                      <span>
+                        <FontAwesomeIcon icon={faBox} size={"1x"} />
+                      </span>
+                    ) : (
+                      <span>
+                        <FontAwesomeIcon icon={faStore} size={"1x"} />
+                      </span>
+                    )}
+                  </span>
+                </span>
               </Text>
               <CardLayout className={"p-0 rounded"}>
                 <Box
-                  className={"kitchen-order-card-top rounded-top"}
-                  style={{ justifyContent: "center" }}
+                  className={`kitchen-order-card-top rounded-top ${backgroundClass}`}
                 >
                   <Text>
                     {item?.td_sale_order_item.map((product, i) =>
@@ -216,7 +248,8 @@ function DelayOrdersTab({ isOrderUpdating, selectedValue, change }) {
                   <Box
                     className={`kitchen-order-ready-box-left  clickable ${
                       isUpdating ? "pressed" : ""
-                    }`} style={{backgroundColor: change ? "#2b3750":'#1a9f53'}}
+                    }`}
+                    style={{ backgroundColor: change ? "#2b3750" : "#1a9f53" }}
                     onClick={() => hanldeOrderStatus(item)}
                     disabled={isUpdating}
                   >

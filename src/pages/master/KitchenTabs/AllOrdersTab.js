@@ -7,8 +7,20 @@ import { css } from "@emotion/react";
 import CountDownSecResult from "../../../helpers/KDS/CountDownSecResult";
 import { HandleNotification } from "../../../components/elements/AlertKDS";
 import { useRef } from "react";
-
-function AllOrdersTab({ selectedValue, notificatinSettings, isOrderUpdating,change }) {
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faPlus,
+  faStore,
+  faBicycle,
+  faBox,
+} from "@fortawesome/free-solid-svg-icons";
+function AllOrdersTab({
+  selectedValue,
+  notificatinSettings,
+  isOrderUpdating,
+  change,
+  backgroundClass,
+}) {
   const [orders, setOrders] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
@@ -80,7 +92,7 @@ function AllOrdersTab({ selectedValue, notificatinSettings, isOrderUpdating,chan
       }
     } catch (error) {
       console.error("Error updating order status:", error);
-     } finally {
+    } finally {
       setIsUpdating(false);
     }
   };
@@ -118,7 +130,7 @@ function AllOrdersTab({ selectedValue, notificatinSettings, isOrderUpdating,chan
         )
     )
   );
-// console.log(items)
+  // console.log(items)
   const itemOrderIds = items.map((item) => item.td_sale_order_id);
 
   const filteredOrders = orders
@@ -168,7 +180,7 @@ function AllOrdersTab({ selectedValue, notificatinSettings, isOrderUpdating,chan
   }, [filteredOrders]);
 
   return (
-    <div className="kitchen-order-main-wrapper margin " >
+    <div className="kitchen-order-main-wrapper margin ">
       {isLoading ? (
         <div className="spinner-container">
           <div className="spinner">
@@ -213,21 +225,36 @@ function AllOrdersTab({ selectedValue, notificatinSettings, isOrderUpdating,chan
               </h4>
 
               <Text className={"pb-2"}>
-                First Floor/الطابق الأول{" "}
-                {item.order_type === "Table"
-                  ? `Table ${item.table_no}`
-                  : item.order_type}{" "}
+                <span
+                  style={{ display: "flex", justifyContent: "space-between" }}
+                >
+                  <span>
+                    First Floor/الطابق الأول{" "}
+                    {item.order_type === "Table"
+                      ? `Table ${item.table_no}`
+                      : item.order_type}{" "}
+                  </span>
+                  <span>
+                    {item.order_type === "Delivery" ? (
+                      <span>
+                        <FontAwesomeIcon icon={faBicycle} size={"1x"} />
+                      </span>
+                    ) : item.order_type === "Takeaway" ? (
+                      <span>
+                        <FontAwesomeIcon icon={faBox} size={"1x"} />
+                      </span>
+                    ) : (
+                      <span>
+                        <FontAwesomeIcon icon={faStore} size={"1x"} />
+                      </span>
+                    )}
+                  </span>
+                </span>
               </Text>
 
               <CardLayout className={"p-0 rounded"}>
                 <Box
-                  className={"kitchen-order-card-top rounded-top"}
-                  // style={{ justifyContent: "center" }}
-                  style={{
-                    justifyContent: "center",
-                    // backgroundColor:
-                    // stationId === 1 ? "" : stationId === 2 ? "green" : "blue",
-                  }}
+                  className={`kitchen-order-card-top rounded-top ${backgroundClass}`}
                 >
                   {item?.td_sale_order_item.map((product, i) =>
                     product.md_product.stations.map((station) =>
@@ -290,7 +317,8 @@ function AllOrdersTab({ selectedValue, notificatinSettings, isOrderUpdating,chan
                   <Box
                     className={`kitchen-order-ready-box-left  clickable ${
                       isUpdating ? "pressed" : ""
-                    }`} style={{backgroundColor: change ? "#2b3750":'#1a9f53'}}
+                    }`}
+                    style={{ backgroundColor: change ? "#2b3750" : "#1a9f53" }}
                     onClick={() => hanldeOrderStatus(item)}
                     disabled={isUpdating}
                   >
@@ -304,7 +332,7 @@ function AllOrdersTab({ selectedValue, notificatinSettings, isOrderUpdating,chan
                   <Box className={"kitchen-order-ready-box-right rounded-end"}>
                     {item?.td_sale_order_item.map((orderItem) => (
                       <CountDownSecResult
-                        key={orderItem.td_sale_order_item_id} 
+                        key={orderItem.td_sale_order_item_id}
                         countdownValue={orderItem}
                         onCountingUpStart={() => handleDelayStatus(item)}
                         cookingTime={cookingTime}

@@ -7657,12 +7657,12 @@ textarea.form-control {
 }
 .kitchen-order-card-top {
   width: 100%;
-  background-color: var(--activeColor) !important;
+  background-color: var(--activeColor) ;
   color: #fff;
   padding: 10px;
   margin: 0px !important;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
 }
 .kitchen-order-ready-box .kitchen-order-ready-box-left {
   width: 70% !important;
@@ -7977,4 +7977,14 @@ margin-left: 35px;
   transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease, color 0.2s ease;
 }
 
+.mc-header-group.orange {
+  background-color: #f08143d4;
+}
 
+.customBackground.live {
+  background-color: #398bff;
+}
+
+.customBackground.coldbar {
+  background-color: #a95879; 
+}
