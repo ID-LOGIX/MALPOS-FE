@@ -48,12 +48,12 @@
 .dark_mode {
   --primaryHEX: #1e66ff;
   --lightColor: #ffffff;
-  --textColor: #b4b4b4;
-  --activeColor: #94b7ff;
+  --textColor: #c9e3f7;
+  --activeColor: #2b3750;
   --placeholderColor: #acacac;
   --headingColor: #e4e4e4;
-  --bodyBG: #112143;
-  --cardBG: #112143;
+  --bodyBG: #1121438f;
+  --cardBG: #576481;
   --paperBG: #132140;
   --lightBG: #071739;
   --thinBorder: #253557;

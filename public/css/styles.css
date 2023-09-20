@@ -7657,12 +7657,12 @@ textarea.form-control {
 }
 .kitchen-order-card-top {
   width: 100%;
-  background-color: var(--activeColor) !important;
+  background-color: var(--activeColor) ;
   color: #fff;
   padding: 10px;
   margin: 0px !important;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
 }
 .kitchen-order-ready-box .kitchen-order-ready-box-left {
   width: 70% !important;
@@ -7940,7 +7940,7 @@ margin-left: 35px;
   width: 24%;
 } 
 .floor-bg.kds {
-  color: #3c4043;
+  color: #000000;
 }
 
 .floor-bg.kds.active {
@@ -7950,4 +7950,41 @@ margin-left: 35px;
   font-size: 13px;
   border-radius: 4px;
   cursor: pointer;
+}
+
+.loading-circle {
+  border: 4px solid rgba(255, 255, 255, 0.3);
+  border-top: 4px solid #fff;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.pressed {
+  transform: scale(0.95); 
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1); 
+  background-color: #66BB6A; 
+  color: white; 
+}
+
+.clickable {
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+}
+
+.mc-header-group.orange {
+  background-color: #f08143d4;
+}
+
+.customBackground.live {
+  background-color: #398bff;
+}
+
+.customBackground.coldbar {
+  background-color: #a95879; 
 }

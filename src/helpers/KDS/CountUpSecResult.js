@@ -1,33 +1,25 @@
 import React, { useMemo, useState, useEffect } from "react";
 import moment from "moment";
-import Countdown from "react-countdown";
 
-const CountDownSecResult = ({
+const CountUpSecResult = ({
   countdownValue,
-  onCountingUpStart,
+
   cookingTime,
 }) => {
   const [countingUp, setCountingUp] = useState(false);
   const [timeElapsed, setTimeElapsed] = useState(0);
-  const [timeHidden, setTimeHidden] = useState(false);
 
   const { created_at } = countdownValue;
   const cooking_time = cookingTime[0];
   const now = Date.now();
   const elapsedMilliseconds = now - moment(created_at).valueOf();
   const elapsedSeconds = Math.floor(elapsedMilliseconds / 1000);
-  const handleCountdownComplete = () => {
-    setCountingUp(true);
-    setTimeHidden(true);
-    onCountingUpStart();
-  };
+
   useEffect(() => {
     setTimeElapsed(elapsedSeconds);
 
-    if (elapsedSeconds == cooking_time * 60) {
+    if (elapsedSeconds > cooking_time * 60) {
       setCountingUp(true);
-    } else {
-      setTimeHidden(true);
     }
   }, [elapsedSeconds, cooking_time]);
   useEffect(() => {
@@ -56,25 +48,6 @@ const CountDownSecResult = ({
 
   return (
     <>
-      {timeHidden
-        ? ""
-        : formattedTime && (
-            <text>
-              {formattedTime.minutes}:{formattedTime.seconds}
-            </text>
-          )}
-      {!countingUp && (
-        <Countdown
-          date={moment(created_at).valueOf() + cooking_time * 60000}
-          renderer={({ minutes, seconds }) => (
-            <text>
-              {String(minutes).padStart(2, "0")}:
-              {String(seconds).padStart(2, "0")}
-            </text>
-          )}
-          onComplete={handleCountdownComplete}
-        />
-      )}
       {countingUp && (
         <text style={{ color: countingUp ? "red" : "black" }}>
           {formattedTime.minutes}:{formattedTime.seconds}
@@ -84,4 +57,4 @@ const CountDownSecResult = ({
   );
 };
 
-export default CountDownSecResult;
+export default CountUpSecResult;
