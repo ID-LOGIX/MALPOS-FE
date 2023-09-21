@@ -9,7 +9,7 @@ const CountUpSecResult = ({
   const [countingUp, setCountingUp] = useState(false);
   const [timeElapsed, setTimeElapsed] = useState(0);
 
-  const { created_at } = countdownValue;
+  const  created_at  = countdownValue;
   const cooking_time = cookingTime[0];
   const now = Date.now();
   const elapsedMilliseconds = now - moment(created_at).valueOf();

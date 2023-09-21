@@ -7934,7 +7934,7 @@ textarea.form-control {
   height: 70px;
 }
 .kitchen-order-main-wrapper.margin {
-margin-left: 35px;
+margin-left: 15px;
 }
 .kitchen-order-main.mb-3.width {
   width: 24%;
@@ -7987,4 +7987,15 @@ margin-left: 35px;
 
 .customBackground.coldbar {
   background-color: #a95879; 
+}
+.customBackground.bbq {
+  background-color: #f08143; 
+  
+}
+.lit {
+  background-color: #f8f8f8;
+  color: #5e5d72;
+}
+.horiz {
+  flex-wrap: nowrap;
 }

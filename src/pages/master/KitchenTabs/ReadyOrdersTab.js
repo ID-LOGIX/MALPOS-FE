@@ -13,7 +13,7 @@ import {
   faBicycle,
   faBox,
 } from "@fortawesome/free-solid-svg-icons";
-function ReadyOrdersTab({ selectedValue, backgroundClass }) {
+function ReadyOrdersTab({ selectedValue, backgroundClass,change }) {
   const [orders, setOrders] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   // const stationId = "md_station_id: 1";
@@ -64,7 +64,7 @@ function ReadyOrdersTab({ selectedValue, backgroundClass }) {
     .reverse();
   // console.log(filteredOrders);
   return (
-    <div className="kitchen-order-main-wrapper margin">
+    <div className="kitchen-order-main-wrapper margin horiz" >
       {isLoading ? (
         <div className="spinner-container">
           <div className="spinner">
@@ -151,7 +151,10 @@ function ReadyOrdersTab({ selectedValue, backgroundClass }) {
                     )}
                   </Text>
                 </Box>
-                <Box className={"px-4 py-2 d-flex flex-column gap-2"}>
+                <Box 
+                   className={`px-4 py-2 d-flex flex-column gap-2 ${change ? 'lit' : ''}`}
+
+                >
                   {item?.td_sale_order_item
                     .filter(
                       (orderItem) =>

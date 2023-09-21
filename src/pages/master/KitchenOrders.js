@@ -68,7 +68,6 @@ const KitchenOrderList = () => {
     setChange(theme === "dark_mode");
   }, [theme]);
 
-  
   useEffect(() => {
     // Update the current time every minute
     const intervalId = setInterval(() => {
@@ -91,13 +90,12 @@ const KitchenOrderList = () => {
     closeModal();
   };
 
-  const backgroundClass = !change
-    ? stationId === 1
-      ? ""
+  const backgroundClass =
+    stationId === 1
+      ? "customBackground bbq"
       : stationId === 2
       ? "customBackground live"
-      : "customBackground coldbar"
-    : "";
+      : "customBackground coldbar";
   const props = {
     selectedValue,
     notificatinSettings,
@@ -109,7 +107,7 @@ const KitchenOrderList = () => {
       <Col md={12} className={"f-13 cusTabsbuttons"}>
         <Box
           className="mc-header-group height"
-          style={{ backgroundColor: change ? "#15161659" : "#f08143d4" }}
+          style={{ backgroundColor: change ? "#1516165c" : "#f08143d4" }}
         >
           <Box className="mc-header-left">
             <Box className={"logo-div"}>

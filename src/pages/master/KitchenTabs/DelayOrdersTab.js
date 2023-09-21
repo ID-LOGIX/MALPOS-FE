@@ -64,11 +64,8 @@ function DelayOrdersTab({
 
   const hanldeOrderStatus = async (item) => {
     setIsUpdating(true);
-    const itemIds =
-      item.td_sale_order_item?.map(
-        (orderItem) => orderItem.td_sale_order_item_id
-      ) || [];
-
+    const itemIds = [item.td_sale_order_item_id];
+    // console.log(itemIds)
     try {
       const response = await axios.post(
         "http://idlogix1.utis.pk:7001/api/kds_status_update",
@@ -115,7 +112,7 @@ function DelayOrdersTab({
   const cookingTime = items.map((item) => item.md_product.cooking_time);
 
   return (
-    <div className="kitchen-order-main-wrapper margin">
+    <div className="kitchen-order-main-wrapper margin horiz">
       {isLoading ? (
         <div className="spinner-container">
           <div className="spinner">
@@ -203,7 +200,9 @@ function DelayOrdersTab({
                     )}
                   </Text>
                 </Box>
-                <Box className={"px-4 py-2 d-flex flex-column gap-2"}>
+                <Box 
+                   className={`px-4 py-2 d-flex flex-column gap-2 ${change ? 'lit' : ''}`}
+                >
                   {item?.td_sale_order_item
                     .filter(
                       (orderItem) =>
@@ -244,30 +243,47 @@ function DelayOrdersTab({
                     ))}
                 </Box>
 
-                <Box className={"d-flex kitchen-order-ready-box px-3 py-4"}>
-                  <Box
-                    className={`kitchen-order-ready-box-left  clickable ${
-                      isUpdating ? "pressed" : ""
-                    }`}
-                    style={{ backgroundColor: change ? "#2b3750" : "#1a9f53" }}
-                    onClick={() => hanldeOrderStatus(item)}
-                    disabled={isUpdating}
-                  >
-                    {isUpdating ? (
-                      <div className="loading-circle"></div>
-                    ) : (
-                      "Ready"
-                    )}
-                  </Box>
+                <Box className={"d-flex kitchen-order-ready-box px-3 py-4"}
+                  style={{ backgroundColor: change ? "#f8f8f8" : "" }}
+                
+                >
+                  {item.td_sale_order_item
+                    .filter(
+                      (item) =>
+                        item.order_item_status !== "ready" &&
+                        item.md_product.stations?.some(
+                          (station) => station.md_station_id === stationId
+                        )
+                    )
+                    .map((filteredItem) => {
+                      return (
+                        <Box
+                          className={`kitchen-order-ready-box-left  clickable ${
+                            isUpdating ? "pressed" : ""
+                          }`}
+                          style={{
+                            backgroundColor: "#1a9f53",
+                          }}
+                          onClick={() => hanldeOrderStatus(filteredItem)}
+                          disabled={isUpdating}
+                        >
+                          {isUpdating ? (
+                            <div className="loading-circle"></div>
+                          ) : (
+                            "Ready"
+                          )}
+                        </Box>
+                      );
+                    })}
 
                   <Box className={"kitchen-order-ready-box-right rounded-end"}>
-                    {item?.td_sale_order_item.map((orderItem) => (
-                      <CountUpSecResult
-                        key={orderItem.td_sale_order_item_id}
-                        countdownValue={orderItem}
-                        cookingTime={cookingTime}
-                      />
-                    ))}
+                    {/* {item?.td_sale_order_item.map((orderItem) => ( */}
+                    <CountUpSecResult
+                      // key={orderItem.td_sale_order_item_id}
+                      countdownValue={item.updated_at}
+                      cookingTime={cookingTime}
+                    />
+                    {/* ))} */}
                   </Box>
                 </Box>
               </CardLayout>

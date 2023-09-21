@@ -60,10 +60,7 @@ function PreparingTab({
     setIsUpdating(true);
 
     setStatusChanged(true);
-    const itemIds =
-      item.td_sale_order_item?.map(
-        (orderItem) => orderItem.td_sale_order_item_id
-      ) || [];
+    const itemIds = [item.td_sale_order_item_id];
 
     try {
       const response = await axios.post(
@@ -95,10 +92,7 @@ function PreparingTab({
   };
 
   const handleDelayStatus = async (item) => {
-    const itemIds =
-      item.td_sale_order_item?.map(
-        (orderItem) => orderItem.td_sale_order_item_id
-      ) || [];
+    const itemIds = [item.td_sale_order_item_id];
 
     try {
       const response = await axios.post(
@@ -138,7 +132,7 @@ function PreparingTab({
   const cookingTime = items.map((item) => item.md_product.cooking_time);
 
   return (
-    <div className="kitchen-order-main-wrapper margin ">
+    <div className="kitchen-order-main-wrapper margin horiz">
       {isLoading ? (
         <div className="spinner-container">
           <div className="spinner">
@@ -225,7 +219,8 @@ function PreparingTab({
                   )}
                 </Box>
 
-                <Box className={"px-4 py-2 d-flex flex-column gap-2"}>
+                <Box
+                 className={`px-4 py-2 d-flex flex-column gap-2 ${change ? 'lit' : ''}`}>
                   {item?.td_sale_order_item?.map((orderItem, index) => {
                     return (
                       <div
@@ -264,33 +259,56 @@ function PreparingTab({
                   })}
                 </Box>
 
-                <Box className={"d-flex kitchen-order-ready-box px-3 py-4"}>
-                  <Box
-                    className={`kitchen-order-ready-box-left  clickable ${
-                      isUpdating ? "pressed" : ""
-                    }`}
-                    style={{ backgroundColor: change ? "#2b3750" : "#1a9f53" }}
-                    onClick={() => hanldeOrderStatus(item)}
-                    disabled={isUpdating}
-                  >
-                    {isUpdating ? (
-                      <div className="loading-circle"></div>
-                    ) : (
-                      "Ready"
-                    )}
-                  </Box>
-
+                <Box className={"d-flex kitchen-order-ready-box px-3 py-4"} 
+                  style={{ backgroundColor: change ? "#f8f8f8" : "" }}
+                >
+                  {item.td_sale_order_item
+                    .filter(
+                      (item) =>
+                        item.order_item_status !== "ready" &&
+                        item.md_product.stations?.some(
+                          (station) => station.md_station_id === stationId
+                        )
+                    )
+                    .map((filteredItem) => {
+                      return (
+                        <Box
+                          className={`kitchen-order-ready-box-left  clickable ${
+                            isUpdating ? "pressed" : ""
+                          }`}
+                          style={{
+                            backgroundColor: "#1a9f53",
+                          }}
+                          onClick={() => hanldeOrderStatus(filteredItem)}
+                          disabled={isUpdating}
+                        >
+                          {isUpdating ? (
+                            <div className="loading-circle"></div>
+                          ) : (
+                            "Ready"
+                          )}
+                        </Box>
+                      );
+                    })}
                   <Box className={"kitchen-order-ready-box-right rounded-end"}>
-                    {item?.td_sale_order_item.map(
-                      (orderItem, td_sale_order_item_id) => (
+                    {item.td_sale_order_item
+                      .filter(
+                        (filteredItem) =>
+                          filteredItem.order_item_status !== "ready" &&
+                          filteredItem.md_product.stations?.some(
+                            (station) => station.md_station_id === stationId
+                          )
+                      )
+                      .map((filteredItem) => (
                         <CountDownSecResult
-                          key={td_sale_order_item_id} // Use a unique key here (replace with an appropriate unique identifier)
-                          countdownValue={orderItem}
-                          onCountingUpStart={() => handleDelayStatus(item)}
+                          key={filteredItem.td_sale_order_item_id} // Add a unique key for each component if necessary
+                          countdownValue={filteredItem}
+                          onCountingUpStart={() =>
+                            handleDelayStatus(filteredItem)
+                          }
                           cookingTime={cookingTime}
                         />
-                      )
-                    )}
+                      ))}
                   </Box>
                 </Box>
               </CardLayout>
