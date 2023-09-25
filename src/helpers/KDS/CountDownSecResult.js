@@ -93,9 +93,7 @@ const CountDownSecResult = ({
         />
       )}
       {countingUp && (
-        <text style={{
-          color: countingUp ? "#fe5945" : ""
-        }}
+        <text 
         >
           {formattedTime.minutes}:{formattedTime.seconds}
         </text>

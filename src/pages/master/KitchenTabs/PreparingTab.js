@@ -325,7 +325,20 @@ function AllOrdersTab({
                         );
                       })}
                     <Box
-                      className={"kitchen-order-ready-box-right rounded-end"}
+                      className={`kitchen-order-ready-box-right rounded-end ${
+                        item.td_sale_order_item.some(
+                          (filteredItem) =>
+                            filteredItem.order_item_status ===
+                              "delay" &&
+                            filteredItem.md_product.stations.some(
+                              (station) =>
+                                station.md_station_id ===
+                                stationId
+                            )
+                        )
+                          ? "delayed-background"
+                          : "bag-color"
+                      }`}
                     >
                       {item.td_sale_order_item
                         .filter(
@@ -484,9 +497,20 @@ function AllOrdersTab({
                                       </Box>
                                     ))}
                                   <Box
-                                    className={
-                                      "kitchen-order-ready-box-right rounded-end"
-                                    }
+                                    className={`kitchen-order-ready-box-right rounded-end ${
+                                      item.td_sale_order_item.some(
+                                        (filteredItem) =>
+                                          filteredItem.order_item_status ===
+                                            "delay" &&
+                                          filteredItem.md_product.stations.some(
+                                            (station) =>
+                                              station.md_station_id ===
+                                              stationId
+                                          )
+                                      )
+                                        ? "delayed-background"
+                                        : "bag-color"
+                                    }`}
                                   >
                                     {item.td_sale_order_item
                                       .filter(

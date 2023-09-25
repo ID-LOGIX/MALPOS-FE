@@ -7674,11 +7674,11 @@ textarea.form-control {
 }
 .kitchen-order-ready-box .kitchen-order-ready-box-right {
   width: 30% !important;
-  background-color: #acb5be ;
+  /* background-color: #acb5be ; */
   padding: 10px;
   display: flex;
   justify-content: center;
-  color: #2d3848;
+  /* color: #2d3848; */
   font-weight: 600;
 }
 
@@ -7998,4 +7998,14 @@ margin-left: 15px;
 }
 .horiz {
   flex-wrap: nowrap;
+}
+
+.delayed-background {
+  background-color: #fc5a45;
+  color: #fbcfbe;
+}
+.bag-color {
+  background-color: #acb5be ;
+  color: #2d3848;
+
 }

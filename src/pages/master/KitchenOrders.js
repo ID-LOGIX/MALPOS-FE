@@ -40,7 +40,7 @@ const KitchenOrderList = () => {
   const { theme, toggleTheme } = useContext(ThemeContext);
   const [change, setChange] = useState(false);
   const [showModal, setShowModal] = useState(false);
-  const [selectedValue, setSelectedValue] = useState("");
+  const [selectedValue, setSelectedValue] = useState([{ label: "All Stations", value: '' }]);
   const [stationId, setStationId] = useState("");
 
   useEffect(() => {

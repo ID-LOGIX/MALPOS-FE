@@ -30,6 +30,7 @@ function AllOrdersTab({
   const [stationName, setStationName] = useState("");
   const [statusChanged, setStatusChanged] = useState(false);
   const [displayOrders, setDisplayOrders] = useState([]);
+
   // const stationId = "md_station_id: 1";
   useEffect(() => {
     if (selectedValue.length > 0) {
@@ -37,7 +38,6 @@ function AllOrdersTab({
       setStationName(selectedValue[0].label);
     }
   }, [selectedValue]);
-
   useEffect(() => {
     setIsLoading(true);
     fetchOrdersForStation();
@@ -130,7 +130,7 @@ function AllOrdersTab({
   const filteredOrders = orders
     .filter((order) => itemOrderIds.includes(order.td_sale_order_id))
     .reverse();
-  // console.log(filteredOrders)
+  // console.log(filteredOrders);
   useEffect(() => {
     const fetchDataInterval = setInterval(() => {
       // setIsLoading(true);
@@ -153,12 +153,12 @@ function AllOrdersTab({
   // console.log(displayOrders)
   useEffect(() => {
     setDisplayOrders(stationId ? filteredOrders : activeOrders.reverse());
-  }, [stationId,orders]);
+  }, [stationId, orders]);
 
-  let storedPrevFilteredOrdersLength =0
+  let storedPrevFilteredOrdersLength = 0;
 
   useEffect(() => {
-    storedPrevFilteredOrdersLength = filteredOrders.length
+    storedPrevFilteredOrdersLength = filteredOrders.length;
 
     localStorage.setItem(
       "prevFilteredOrdersLength",
@@ -167,7 +167,7 @@ function AllOrdersTab({
   }, [stationId]);
 
   useEffect(() => {
-    storedPrevFilteredOrdersLength =parseInt(
+    storedPrevFilteredOrdersLength = parseInt(
       localStorage.getItem("prevFilteredOrdersLength"),
       10
     );
@@ -190,7 +190,7 @@ function AllOrdersTab({
       );
     });
   }, [displayOrders]);
-  
+
   const cookTime = items.map((item) => item.md_product.cooking_time);
   const cookingTime = cookTime[0];
   return (
@@ -345,7 +345,11 @@ function AllOrdersTab({
                             style={{
                               backgroundColor: "#1a9f53",
                             }}
-                            onClick={() => hanldeOrderStatus(filteredItem.td_sale_order_item_id)}
+                            onClick={() =>
+                              hanldeOrderStatus(
+                                filteredItem.td_sale_order_item_id
+                              )
+                            }
                             disabled={isUpdating}
                             key={filteredItem.td_sale_order_item_id}
                           >
@@ -358,7 +362,20 @@ function AllOrdersTab({
                         );
                       })}
                     <Box
-                      className={"kitchen-order-ready-box-right rounded-end"}
+                      className={`kitchen-order-ready-box-right rounded-end ${
+                        item.td_sale_order_item.some(
+                          (filteredItem) =>
+                            filteredItem.order_item_status ===
+                              "delay" &&
+                            filteredItem.md_product.stations.some(
+                              (station) =>
+                                station.md_station_id ===
+                                stationId
+                            )
+                        )
+                          ? "delayed-background"
+                          : "bag-color"
+                      }`}
                     >
                       {item.td_sale_order_item
                         .filter(
@@ -409,6 +426,7 @@ function AllOrdersTab({
                           groupedItems.get(stationId) || [];
                         itemsForStation.push(station);
                         groupedItems.set(stationId, itemsForStation);
+                          
                       });
 
                       return (
@@ -420,16 +438,19 @@ function AllOrdersTab({
                                 className={"p-0 rounded"}
                                 style={{ marginBottom: "20px" }}
                               >
+                                
                                 {stations.map((station) => (
+                                  
                                   <Box
                                     key={station.md_station_id}
-                                    // className={`kitchen-order-card-top rounded-top ${backgroundClass}`}
+                                    
                                     className={`kitchen-order-card-top rounded-top ${backgroundClass}`}
+
                                   >
                                     <Text>{station.station_name}</Text>
                                   </Box>
                                 ))}
-
+                              
                                 <Box
                                   className={`px-4 py-2 d-flex flex-column gap-2 ${
                                     change ? "lit" : ""
@@ -507,7 +528,9 @@ function AllOrdersTab({
                                           backgroundColor: "#1a9f53",
                                         }}
                                         onClick={() =>
-                                          hanldeOrderStatus(filteredItem.td_sale_order_item_id)
+                                          hanldeOrderStatus(
+                                            filteredItem.td_sale_order_item_id
+                                          )
                                         }
                                         disabled={isUpdating}
                                       >
@@ -518,10 +541,55 @@ function AllOrdersTab({
                                         )}
                                       </Box>
                                     ))}
-                                  <Box
+                                  {/* <Box
                                     className={
                                       "kitchen-order-ready-box-right rounded-end"
                                     }
+                                  >
+                                    {item.td_sale_order_item
+                                      .filter(
+                                        (filteredItem) =>
+                                          filteredItem.order_item_status !==
+                                            "ready" &&
+                                          filteredItem.md_product.stations.some(
+                                            (station) =>
+                                              station.md_station_id ===
+                                              stationId
+                                          )
+                                      )
+                                      .map((filteredItem) => {
+                                        const time =
+                                          filteredItem.md_product.cooking_time;
+
+                                        return (
+                                          <CountDownSecResult
+                                            key={
+                                              filteredItem.td_sale_order_item_id
+                                            }
+                                            countdownValue={item.time}
+                                            onCountingUpStart={() =>
+                                              handleDelayStatus(filteredItem)
+                                            }
+                                            cookingTime={time}
+                                          />
+                                        );
+                                      })}
+                                  </Box> */}
+                                  <Box
+                                    className={`kitchen-order-ready-box-right rounded-end ${
+                                      item.td_sale_order_item.some(
+                                        (filteredItem) =>
+                                          filteredItem.order_item_status ===
+                                            "delay" &&
+                                          filteredItem.md_product.stations.some(
+                                            (station) =>
+                                              station.md_station_id ===
+                                              stationId
+                                          )
+                                      )
+                                        ? "delayed-background"
+                                        : "bag-color"
+                                    }`}
                                   >
                                     {item.td_sale_order_item
                                       .filter(
