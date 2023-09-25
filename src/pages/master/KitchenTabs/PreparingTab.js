@@ -155,35 +155,9 @@ function AllOrdersTab({
     setDisplayOrders(stationId ? filteredOrders : activeOrders.reverse());
   }, [stationId, orders]);
 
-  let storedPrevFilteredOrdersLength = parseInt(
-    localStorage.getItem("prevFilteredOrdersLength"),
-    10
-  );
+  
 
-  useEffect(() => {
-    storedPrevFilteredOrdersLength = filteredOrders.length;
-  }, [stationId]);
-
-  // useEffect(() => {
-  //   setTimeout(() => {
-  //     if (
-  //       storedPrevFilteredOrdersLength &&
-  //       filteredOrders.length > storedPrevFilteredOrdersLength
-  //     ) {
-  //       // console.log("Notification triggered");
-  //       HandleNotification(stationName, notificatinSettings);
-  //     }
-
-  //     prevFilteredOrdersLength.current = filteredOrders.length;
-
-  //     storedPrevFilteredOrdersLength = filteredOrders.length;
-
-  //     localStorage.setItem(
-  //       "prevFilteredOrdersLength",
-  //       storedPrevFilteredOrdersLength.toString()
-  //     );
-  //   }, 2000);
-  // }, [displayOrders]);
+ 
   const cookTime = items.map((item) => item.md_product.cooking_time);
   const cookingTime = cookTime[0];
   return (
