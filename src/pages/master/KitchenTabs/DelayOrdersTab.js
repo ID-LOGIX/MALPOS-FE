@@ -22,7 +22,8 @@ function DelayOrdersTab({
   const [orders, setOrders] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
-
+  const [displayOrders, setDisplayOrders] = useState([]);
+  
   // const [elapsedTime, setElapsedTime] = useState(0);
 
   // const stationId = "md_station_id: 1";
@@ -92,6 +93,16 @@ function DelayOrdersTab({
       setIsUpdating(false);
     }
   };
+  // useEffect(() => {
+  //   const fetchDataInterval = setInterval(() => {
+  //     fetchOrdersForStation(selectedValue);
+  //   }, 7000);
+
+  //   return () => {
+  //     clearInterval(fetchDataInterval);
+  //   };
+  // }, []);
+  
 
   let items = orders?.flatMap((order) =>
     order.td_sale_order_item.filter(
@@ -108,8 +119,19 @@ function DelayOrdersTab({
   const filteredOrders = orders
     .filter((order) => itemOrderIds.includes(order.td_sale_order_id))
     .reverse();
+    useEffect(() => {
+      setDisplayOrders(stationId ? filteredOrders : activeOrders.reverse());
+    }, [stationId, orders]);
+    const activeOrders = orders?.filter((order) =>
+    order.td_sale_order_item?.some(
+      (item) =>
+        item.order_item_status === "delay" &&
+        item.md_product.stations?.some((station) => station.md_station_id)
+    )
+  );
 
-  const cookingTime = items.map((item) => item.md_product.cooking_time);
+    const cookTime = items.map((item) => item.md_product.cooking_time);
+    const cookingTime = cookTime[0];
 
   return (
     <div className="kitchen-order-main-wrapper margin horiz">
@@ -120,7 +142,7 @@ function DelayOrdersTab({
           </div>
         </div>
       ) : (
-        filteredOrders?.map((item, index) => {
+        displayOrders?.map((item, index) => {
           // if (item.status === "delay") {
           return (
             <Box key={index} className={"kitchen-order-main mb-3 width"}>
@@ -184,7 +206,9 @@ function DelayOrdersTab({
                   </span>
                 </span>
               </Text>
-              <CardLayout className={"p-0 rounded"}>
+              {stationId && (
+
+              <CardLayout className={"p-0 rounded"} >
                 <Box
                   className={`kitchen-order-card-top rounded-top ${backgroundClass}`}
                 >
@@ -250,7 +274,7 @@ function DelayOrdersTab({
                   {item.td_sale_order_item
                     .filter(
                       (item) =>
-                        item.order_item_status !== "ready" &&
+                        item.order_item_status === "delay" &&
                         item.md_product.stations?.some(
                           (station) => station.md_station_id === stationId
                         )
@@ -276,17 +300,196 @@ function DelayOrdersTab({
                       );
                     })}
 
-                  <Box className={"kitchen-order-ready-box-right rounded-end"}>
-                    {/* {item?.td_sale_order_item.map((orderItem) => ( */}
+                  <Box className={"kitchen-order-ready-box-right rounded-end"}
+                    style={{backgroundColor:"#fe5945"}}
+                  
+                  >
                     <CountUpSecResult
-                      // key={orderItem.td_sale_order_item_id}
-                      countdownValue={item.updated_at}
+                      countdownValue={item.time}
                       cookingTime={cookingTime}
                     />
                     {/* ))} */}
                   </Box>
                 </Box>
               </CardLayout>
+              )}
+              {!stationId && (
+                <div>
+                  {item?.td_sale_order_item
+                    .filter(
+                      (product) =>
+                        product.order_item_status === "delay" &&
+                        product.md_product.stations.some(
+                          (station) => station.md_station_id
+                        )
+                    )
+                    .map((product, i) => {
+                      // Filter stations with md_station_id and group them by md_station_id
+                      const stationsWithId = product.md_product.stations.filter(
+                        (station) => station.md_station_id
+                      );
+
+                      // Create a Map to group items by md_station_id
+                      const groupedItems = new Map();
+
+                      stationsWithId.forEach((station) => {
+                        const stationId = station.md_station_id;
+
+                        // Initialize or get the array for this md_station_id
+                        const itemsForStation =
+                          groupedItems.get(stationId) || [];
+                        itemsForStation.push(station);
+                        groupedItems.set(stationId, itemsForStation);
+                      });
+
+                      return (
+                        <div key={i}>
+                          {Array.from(groupedItems).map(
+                            ([stationId, stations], j) => (
+                              <CardLayout key={j} className={"p-0 rounded"} style={{marginBottom:"20px"}}>
+                                {stations.map((station) => (
+                                  <Box
+                                    key={station.md_station_id}
+                                    // className={`kitchen-order-card-top rounded-top ${backgroundClass}`}
+                                    className={`kitchen-order-card-top rounded-top ${backgroundClass}`}
+
+                                  >
+                                    <Text>{station.station_name}</Text>
+                                  </Box>
+                                ))}
+
+                                <Box
+                                  className={`px-4 py-2 d-flex flex-column gap-2 ${
+                                    change ? "lit" : ""
+                                  }`}
+                                >
+                                  {item?.td_sale_order_item
+                                    .filter((orderItem) =>
+                                      orderItem.md_product.stations.some(
+                                        (station) =>
+                                          station.md_station_id === stationId
+                                      )
+                                    )
+                                    .map((orderItem, index) => (
+                                      <div
+                                        key={index}
+                                        className="d-flex justify-content-between align-items-center"
+                                      >
+                                        {orderItem?.md_product &&
+                                        orderItem.md_product.product_name ? (
+                                          <>
+                                            <Text style={{ fontWeight: "500" }}>
+                                              <span
+                                                style={{
+                                                  fontWeight: "500",
+                                                  fontSize: "1.2em",
+                                                }}
+                                              >
+                                                {orderItem.qty} x
+                                              </span>{" "}
+                                              <span>
+                                                {
+                                                  orderItem.md_product
+                                                    .product_name
+                                                }
+                                              </span>
+                                              <div style={{ color: "#999" }}>
+                                                {orderItem.comment
+                                                  ? "(" +
+                                                    orderItem.comment +
+                                                    ")"
+                                                  : ""}
+                                              </div>
+                                            </Text>
+                                          </>
+                                        ) : null}
+                                      </div>
+                                    ))}
+                                </Box>
+
+                                <Box
+                                  className={
+                                    "d-flex kitchen-order-ready-box px-3 py-4"
+                                  }
+                                  style={{
+                                    backgroundColor: change ? "#f8f8f8" : "",
+                                  }}
+                                >
+                                  {item.td_sale_order_item
+                                    .filter(
+                                      (orderItem) =>
+                                        orderItem.order_item_status !==
+                                          "ready" &&
+                                        orderItem.md_product.stations.some(
+                                          (station) =>
+                                            station.md_station_id === stationId
+                                        )
+                                    )
+                                    .map((filteredItem, j) => (
+                                      <Box
+                                        key={filteredItem.td_sale_order_item_id}
+                                        className={`kitchen-order-ready-box-left  clickable ${
+                                          isUpdating ? "pressed" : ""
+                                        }`}
+                                        style={{
+                                          backgroundColor: "#1a9f53",
+                                        }}
+                                        onClick={() =>
+                                          hanldeOrderStatus(filteredItem)
+                                        }
+                                        disabled={isUpdating}
+                                      >
+                                        {isUpdating ? (
+                                          <div className="loading-circle"></div>
+                                        ) : (
+                                          "Ready"
+                                        )}
+                                      </Box>
+                                    ))}
+                                  <Box
+                                    className={
+                                      "kitchen-order-ready-box-right rounded-end"
+                                    }
+                                    style={{backgroundColor:"#fe5945"}}
+                                  >
+                                    {item.td_sale_order_item
+                                      .filter(
+                                        (filteredItem) =>
+                                          filteredItem.order_item_status ===
+                                            "delay" &&
+                                          filteredItem.md_product.stations.some(
+                                            (station) =>
+                                              station.md_station_id ===
+                                              stationId
+                                          )
+                                      )
+                                      .map((filteredItem) => {
+                                        // Calculate the cooking time outside of the JSX
+                                        const time =
+                                          filteredItem.md_product.cooking_time;
+
+                                        return (
+                                          <CountUpSecResult
+                                            key={
+                                              filteredItem.td_sale_order_item_id
+                                            }
+                                            countdownValue={item.time}
+                                            
+                                            cookingTime={time}
+                                          />
+                                        );
+                                      })}
+                                  </Box>
+                                </Box>
+                              </CardLayout>
+                            )
+                          )}
+                        </div>
+                      );
+                    })}
+                </div>
+              )}
+
             </Box>
           );
         })

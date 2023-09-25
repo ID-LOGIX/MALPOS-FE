@@ -7674,11 +7674,11 @@ textarea.form-control {
 }
 .kitchen-order-ready-box .kitchen-order-ready-box-right {
   width: 30% !important;
-  background-color: #1b2b4d !important;
+  background-color: #acb5be ;
   padding: 10px;
   display: flex;
   justify-content: center;
-  color: #fff;
+  color: #2d3848;
   font-weight: 600;
 }
 

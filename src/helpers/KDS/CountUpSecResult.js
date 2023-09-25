@@ -10,9 +10,9 @@ const CountUpSecResult = ({
   const [timeElapsed, setTimeElapsed] = useState(0);
 
   const  created_at  = countdownValue;
-  const cooking_time = cookingTime[0];
+  const cooking_time = cookingTime;
   const now = Date.now();
-  const elapsedMilliseconds = now - moment(created_at).valueOf();
+  const elapsedMilliseconds = now - moment(created_at).valueOf() - 5 * 60 * 60000;
   const elapsedSeconds = Math.floor(elapsedMilliseconds / 1000);
 
   useEffect(() => {
@@ -49,7 +49,7 @@ const CountUpSecResult = ({
   return (
     <>
       {countingUp && (
-        <text style={{ color: countingUp ? "red" : "black" }}>
+        <text style={{ color: countingUp ? "#ffd4c4" : "" }}>
           {formattedTime.minutes}:{formattedTime.seconds}
         </text>
       )}
