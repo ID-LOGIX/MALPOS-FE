@@ -6,30 +6,36 @@ const CountDownSecResult = ({
   countdownValue,
   onCountingUpStart,
   cookingTime,
+  key,
 }) => {
   const [countingUp, setCountingUp] = useState(false);
   const [timeElapsed, setTimeElapsed] = useState(0);
   const [timeHidden, setTimeHidden] = useState(false);
+  const [orderKey, setOrderKey] = useState(key); // Track the order key
 
-  const { created_at } = countdownValue;
-  const cooking_time = cookingTime[0];
+  const created_at = countdownValue 
+  const cooking_time = cookingTime;
+
   const now = Date.now();
-  const elapsedMilliseconds = now - moment(created_at).valueOf();
+  const elapsedMilliseconds = now - moment(created_at).valueOf()- 5 * 60 * 60000;
   const elapsedSeconds = Math.floor(elapsedMilliseconds / 1000);
+
   const handleCountdownComplete = () => {
-    setCountingUp(true);
     setTimeHidden(true);
+    setCountingUp(true);
     onCountingUpStart();
   };
+
   useEffect(() => {
     setTimeElapsed(elapsedSeconds);
 
-    if (elapsedSeconds == cooking_time * 60) {
+    if (elapsedSeconds === cooking_time * 60) {
       setCountingUp(true);
     } else {
       setTimeHidden(true);
     }
   }, [elapsedSeconds, cooking_time]);
+
   useEffect(() => {
     let intervalId;
 
@@ -41,6 +47,17 @@ const CountDownSecResult = ({
 
     return () => clearInterval(intervalId);
   }, [countingUp]);
+
+  // Reset countdown when a new order arrives with a different key
+  useEffect(() => {
+    if (key !== orderKey) {
+      setCountingUp(false);
+      setTimeElapsed(0);
+      setTimeHidden(false);
+      setOrderKey(key);
+    }
+  }, [key, orderKey]);
+
   const formattedTime = useMemo(() => {
     if (countingUp) {
       const minutes = Math.floor(timeElapsed / 60) - cooking_time;
@@ -52,7 +69,7 @@ const CountDownSecResult = ({
     } else {
       return null;
     }
-  }, [countingUp, timeElapsed]);
+  }, [countingUp, timeElapsed, cooking_time]);
 
   return (
     <>
@@ -65,7 +82,7 @@ const CountDownSecResult = ({
           )}
       {!countingUp && (
         <Countdown
-          date={moment(created_at).valueOf() + cooking_time * 60000}
+          date={moment(created_at).valueOf() + 5 * 60 * 60000 + cooking_time * 60000}
           renderer={({ minutes, seconds }) => (
             <text>
               {String(minutes).padStart(2, "0")}:
@@ -76,7 +93,8 @@ const CountDownSecResult = ({
         />
       )}
       {countingUp && (
-        <text style={{ color: countingUp ? "red" : "black" }}>
+        <text 
+        >
           {formattedTime.minutes}:{formattedTime.seconds}
         </text>
       )}

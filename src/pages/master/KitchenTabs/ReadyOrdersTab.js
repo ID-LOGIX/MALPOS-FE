@@ -13,9 +13,11 @@ import {
   faBicycle,
   faBox,
 } from "@fortawesome/free-solid-svg-icons";
-function ReadyOrdersTab({ selectedValue, backgroundClass }) {
+function ReadyOrdersTab({ selectedValue, backgroundClass, change }) {
   const [orders, setOrders] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [displayOrders, setDisplayOrders] = useState([]);
+
   // const stationId = "md_station_id: 1";
   const [stationId, setStationId] = useState("");
   useEffect(() => {
@@ -45,6 +47,15 @@ function ReadyOrdersTab({ selectedValue, backgroundClass }) {
       console.error("Error fetching orders:", error);
     }
   }
+  useEffect(() => {
+    const fetchDataInterval = setInterval(() => {
+      fetchOrdersForStation(selectedValue);
+    }, 7000);
+
+    return () => {
+      clearInterval(fetchDataInterval);
+    };
+  }, []);
   let items = orders?.flatMap((order) =>
     order.td_sale_order_item.filter(
       (item) =>
@@ -54,17 +65,26 @@ function ReadyOrdersTab({ selectedValue, backgroundClass }) {
         )
     )
   );
-  // console.log(items);
-  // Create an array of td_sale_order_id values from items
+
   const itemOrderIds = items.map((item) => item.td_sale_order_id);
 
-  // Filter orders based on matching td_sale_order_id
   const filteredOrders = orders
     .filter((order) => itemOrderIds.includes(order.td_sale_order_id))
     .reverse();
-  // console.log(filteredOrders);
+  const activeOrders = orders?.filter((order) =>
+    order.td_sale_order_item?.some(
+      (item) =>
+        item.order_item_status === "ready" &&
+        item.md_product.stations?.some((station) => station.md_station_id)
+    )
+  );
+
+  // console.log(displayOrders)
+  useEffect(() => {
+    setDisplayOrders(stationId ? filteredOrders : activeOrders.reverse());
+  }, [stationId, orders]);
   return (
-    <div className="kitchen-order-main-wrapper margin">
+    <div className="kitchen-order-main-wrapper margin horiz">
       {isLoading ? (
         <div className="spinner-container">
           <div className="spinner">
@@ -72,7 +92,7 @@ function ReadyOrdersTab({ selectedValue, backgroundClass }) {
           </div>
         </div>
       ) : (
-        filteredOrders?.map((item, index) => {
+        displayOrders?.map((item, index) => {
           return (
             <Box key={index} className={"kitchen-order-main mb-3 width"}>
               <h4
@@ -134,64 +154,174 @@ function ReadyOrdersTab({ selectedValue, backgroundClass }) {
                   </span>
                 </span>
               </Text>
-
-              <CardLayout className={"p-0 rounded"}>
-                <Box
-                  className={`kitchen-order-card-top rounded-top ${backgroundClass}`}
-                >
-                  <Text>
-                    {item?.td_sale_order_item.map((product, i) =>
-                      product.md_product.stations.map((station) =>
-                        station.md_station_id === stationId ? (
-                          <Text key={station.station_name}>
-                            {station.station_name}
-                          </Text>
-                        ) : null
+              {stationId && (
+                <CardLayout className={"p-0 rounded"}>
+                  <Box
+                    className={`kitchen-order-card-top rounded-top ${backgroundClass}`}
+                  >
+                    <Text>
+                      {item?.td_sale_order_item.map((product, i) =>
+                        product.md_product.stations.map((station) =>
+                          station.md_station_id === stationId ? (
+                            <Text key={station.station_name}>
+                              {station.station_name}
+                            </Text>
+                          ) : null
+                        )
+                      )}
+                    </Text>
+                  </Box>
+                  <Box
+                    className={`px-4 py-2 d-flex flex-column gap-2 ${
+                      change ? "lit" : ""
+                    }`}
+                  >
+                    {item?.td_sale_order_item
+                      .filter(
+                        (orderItem) =>
+                          orderItem.order_item_status === "ready" &&
+                          orderItem.md_product.stations.some(
+                            (station) => station.md_station_id === stationId
+                          )
                       )
-                    )}
-                  </Text>
-                </Box>
-                <Box className={"px-4 py-2 d-flex flex-column gap-2"}>
+                      .map((orderItem, index) => (
+                        <div
+                          key={index}
+                          className="d-flex justify-content-between align-items-center"
+                        >
+                          <Text style={{ fontWeight: "500" }}>
+                            <span
+                              style={{
+                                fontWeight: "500",
+                                fontSize: "1.2em",
+                              }}
+                            >
+                              {orderItem.qty} x
+                            </span>{" "}
+                            {/* Check if md_product exists and has a product_name property */}
+                            {orderItem?.md_product &&
+                            orderItem.md_product.product_name ? (
+                              <span>{orderItem.md_product.product_name}</span>
+                            ) : (
+                              ""
+                            )}
+                            <div style={{ color: "#999" }}>
+                              {orderItem.comment
+                                ? "(" + orderItem.comment + ")"
+                                : ""}
+                            </div>
+                          </Text>
+                          <span>&#10004;</span>
+                        </div>
+                      ))}
+                  </Box>
+                </CardLayout>
+              )}
+              {!stationId && (
+                <div>
                   {item?.td_sale_order_item
                     .filter(
-                      (orderItem) =>
-                        orderItem.order_item_status === "ready" &&
-                        orderItem.md_product.stations.some(
-                          (station) => station.md_station_id === stationId
+                      (product) =>
+                        product.order_item_status === "ready" &&
+                        product.md_product.stations.some(
+                          (station) => station.md_station_id
                         )
                     )
-                    .map((orderItem, index) => (
-                      <div
-                        key={index}
-                        className="d-flex justify-content-between align-items-center"
-                      >
-                        <Text style={{ fontWeight: "500" }}>
-                          <span
-                            style={{
-                              fontWeight: "500",
-                              fontSize: "1.2em",
-                            }}
-                          >
-                            {orderItem.qty} x
-                          </span>{" "}
-                          {/* Check if md_product exists and has a product_name property */}
-                          {orderItem?.md_product &&
-                          orderItem.md_product.product_name ? (
-                            <span>{orderItem.md_product.product_name}</span>
-                          ) : (
-                            ""
+                    .map((product, i) => {
+                      // Filter stations with md_station_id and group them by md_station_id
+                      const stationsWithId = product.md_product.stations.filter(
+                        (station) => station.md_station_id
+                      );
+
+                      // Create a Map to group items by md_station_id
+                      const groupedItems = new Map();
+
+                      stationsWithId.forEach((station) => {
+                        const stationId = station.md_station_id;
+
+                        // Initialize or get the array for this md_station_id
+                        const itemsForStation =
+                          groupedItems.get(stationId) || [];
+                        itemsForStation.push(station);
+                        groupedItems.set(stationId, itemsForStation);
+                      });
+
+                      return (
+                        <div key={i}>
+                          {Array.from(groupedItems).map(
+                            ([stationId, stations], j) => (
+                              <CardLayout
+                                key={j}
+                                className={"p-0 rounded"}
+                                style={{ marginBottom: "20px" }}
+                              >
+                                {stations.map((station) => (
+                                  <Box
+                                    key={station.md_station_id}
+                                    // className={`kitchen-order-card-top rounded-top ${backgroundClass}`}
+                                    className={`kitchen-order-card-top rounded-top ${backgroundClass}`}
+                                  >
+                                    <Text>{station.station_name}</Text>
+                                  </Box>
+                                ))}
+
+                                <Box
+                                  className={`px-4 py-2 d-flex flex-column gap-2 ${
+                                    change ? "lit" : ""
+                                  }`}
+                                >
+                                  {item?.td_sale_order_item
+                                    .filter((orderItem) =>
+                                      orderItem.md_product.stations.some(
+                                        (station) =>
+                                          station.md_station_id === stationId
+                                      )
+                                    )
+                                    .map((orderItem, index) => (
+                                      <div
+                                        key={index}
+                                        className="d-flex justify-content-between align-items-center"
+                                      >
+                                        {orderItem?.md_product &&
+                                        orderItem.md_product.product_name ? (
+                                          <>
+                                            <Text style={{ fontWeight: "500" }}>
+                                              <span
+                                                style={{
+                                                  fontWeight: "500",
+                                                  fontSize: "1.2em",
+                                                }}
+                                              >
+                                                {orderItem.qty} x
+                                              </span>{" "}
+                                              <span>
+                                                {
+                                                  orderItem.md_product
+                                                    .product_name
+                                                }
+                                              </span>
+                                              <div style={{ color: "#999" }}>
+                                                {orderItem.comment
+                                                  ? "(" +
+                                                    orderItem.comment +
+                                                    ")"
+                                                  : ""}
+                                              </div>
+                                            </Text>
+                                            <span>&#10004;</span>
+                                          </>
+                                        ) : null}
+                                      </div>
+                                    ))}
+                                </Box>
+                              </CardLayout>
+                            )
                           )}
-                          <div style={{ color: "#999" }}>
-                            {orderItem.comment
-                              ? "(" + orderItem.comment + ")"
-                              : ""}
-                          </div>
-                        </Text>
-                        <span>&#10004;</span>
-                      </div>
-                    ))}
-                </Box>
-              </CardLayout>
+                        </div>
+                      );
+                    })}
+                </div>
+              )}
             </Box>
           );
         })

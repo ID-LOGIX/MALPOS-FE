@@ -7674,11 +7674,11 @@ textarea.form-control {
 }
 .kitchen-order-ready-box .kitchen-order-ready-box-right {
   width: 30% !important;
-  background-color: #1b2b4d !important;
+  /* background-color: #acb5be ; */
   padding: 10px;
   display: flex;
   justify-content: center;
-  color: #fff;
+  /* color: #2d3848; */
   font-weight: 600;
 }
 
@@ -7934,7 +7934,7 @@ textarea.form-control {
   height: 70px;
 }
 .kitchen-order-main-wrapper.margin {
-margin-left: 35px;
+margin-left: 15px;
 }
 .kitchen-order-main.mb-3.width {
   width: 24%;
@@ -7987,4 +7987,25 @@ margin-left: 35px;
 
 .customBackground.coldbar {
   background-color: #a95879; 
+}
+.customBackground.bbq {
+  background-color: #f08143; 
+  
+}
+.lit {
+  background-color: #f8f8f8;
+  color: #5e5d72;
+}
+.horiz {
+  flex-wrap: nowrap;
+}
+
+.delayed-background {
+  background-color: #fc5a45;
+  color: #fbcfbe;
+}
+.bag-color {
+  background-color: #acb5be ;
+  color: #2d3848;
+
 }
